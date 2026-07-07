@@ -102,6 +102,27 @@ function nathaliemota_assets() {
 add_action( 'wp_enqueue_scripts', 'nathaliemota_assets' );
 
 /**
+ * Optimisation des images (Green Code).
+ * On génère des formats sur-mesure pour n'envoyer au navigateur que la taille
+ * réellement affichée, et jamais les originaux (très lourds) de Nathalie.
+ */
+function nathaliemota_image_sizes() {
+	// Vignette carrée recadrée pour la grille du catalogue (étape 4).
+	add_image_size( 'photo_thumbnail', 600, 600, true );
+	add_image_size( 'photo_thumbnail_2x', 1200, 1200, true ); // écrans Retina
+	// Grand format NON recadré pour la page infos — respecte paysage/portrait (étape 3).
+	add_image_size( 'photo_large', 1600, 1600, false );
+}
+add_action( 'after_setup_theme', 'nathaliemota_image_sizes' );
+
+// Compression JPEG (82 = bon compromis poids/qualité).
+add_filter( 'jpeg_quality', function () { return 82; } );
+add_filter( 'wp_editor_set_quality', function () { return 82; } );
+
+// Plafonne l'image d'origine stockée (WordPress : 2560 px par défaut).
+add_filter( 'big_image_size_threshold', function () { return 2000; } );
+
+/**
  * Menu de secours affiché tant que le menu "Menu principal" n'a pas
  * été créé dans Apparence > Menus. Ne sert qu'au confort de développement.
  */
