@@ -1,10 +1,10 @@
 /*
 Theme Name: Nathalie Mota
 Theme URI: https://motaphoto.com
-Author: [Votre nom]
-Author URI: https://github.com/[votre-compte]
+Author: Nicolas Verbeke
+Author URI: https://github.com/NicoVBucks
 Description: Thème WordPress sur-mesure pour le portfolio de la photographe événementielle Nathalie Mota.
-Version: 0.1.0
+Version: 1.0.0
 Requires at least: 6.0
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
@@ -13,39 +13,55 @@ Text Domain: nathaliemota
 */
 
 /* =========================================================
+   SOMMAIRE
+   1.  Design tokens
+   2.  Reset
+   3.  Layout
+   4.  Header
+   5.  Footer
+   6.  Modale de contact
+   7.  Bloc photo (catalogue + photos apparentées)
+   8.  Hero
+   9.  Filtres
+   10. Catalogue et bouton "Charger plus"
+   11. Page infos d'une photo
+   12. Lightbox
+   13. Responsive
+   ========================================================= */
+
+/* =========================================================
    1. Design tokens
-   À ajuster sur les valeurs exactes de la maquette Figma.
+   Couleurs et typographie relevées sur le styleguide Figma.
+   Tout le thème en hérite : changer une valeur ici suffit.
    ========================================================= */
 :root {
-  /* Couleurs — relevées sur le styleguide Figma (Maquette 2.0) */
+  /* Couleurs */
   --color-bg:           #ffffff;
   --color-text:         #313144; /* navy — texte courant & navigation */
-  --color-title:        #000000; /* noir — titres */
-  --color-muted:        #6b6b6b; /* gris lisible pour les légendes (contraste AA) */
-  --color-line:         #e5e5e5; /* séparateurs / bordures */
-  --color-btn:          #d8d8d8; /* fond des boutons (Contact, Charger plus) */
+  --color-title:        #000000; /* noir — titres et filets */
+  --color-muted:        #6b6b6b; /* gris des légendes */
+  --color-line:         #e5e5e5; /* séparateurs discrets */
+  --color-border:       #b8bbc2; /* bordure des listes déroulantes */
+  --color-btn:          #d8d8d8; /* fond des boutons */
   --color-accent:       #e00000; /* rouge — logo & accents */
-  --color-accent-light: #fe5858; /* corail — survols secondaires */
-  --color-pink:         #ffd6d6; /* rose pastel — fond doux éventuel */
   --color-overlay:      rgba(0, 0, 0, 0.8); /* fond lightbox / modale (noir 80 %) */
 
-  /* Typographie — relevée dans Figma (mode Inspect).
-     Affichage : Space Mono. Corps : Poppins Light (300). */
-  --font-display: "Space Mono", "Courier New", monospace; /* H1/H2/H3, logo, labels */
+  /* Typographie : Space Mono pour l'affichage, Poppins pour le corps. */
+  --font-display: "Space Mono", "Courier New", monospace;
   --font-body:    "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-  /* Échelle / rythme */
-  --container:   1280px;
-  --gutter:      clamp(1rem, 4vw, 2.5rem);
-  --header-h:    72px;
+  /* Échelle et rythme */
+  --container: 1280px;
+  --gutter:    clamp(1rem, 4vw, 2.5rem);
+  --header-h:  72px;
 
-  /* Transitions (animations 100 % CSS) */
-  --ease:    cubic-bezier(0.4, 0, 0.2, 1);
-  --speed:   0.3s;
+  /* Transitions : toutes les animations du thème sont en CSS. */
+  --ease:  cubic-bezier(0.4, 0, 0.2, 1);
+  --speed: 0.3s;
 }
 
 /* =========================================================
-   2. Reset léger
+   2. Reset
    ========================================================= */
 *,
 *::before,
@@ -73,23 +89,23 @@ button { font: inherit; cursor: pointer; }
 
 ul { list-style: none; margin: 0; padding: 0; }
 
-/* Empêche le scroll du fond quand la modale est ouverte */
+/* Empêche le défilement de la page quand une modale est ouverte. */
 body.is-modal-open { overflow: hidden; }
 
-/* Accessibilité : focus clavier visible */
+/* Accessibilité : le focus clavier reste visible. */
 :where(a, button, input, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
-/* Lien d'évitement */
+/* Lien d'évitement, visible uniquement au focus clavier. */
 .skip-link {
   position: absolute;
   left: -9999px;
   top: 0;
-  background: var(--color-text);
-  color: #fff;
   padding: 0.5rem 1rem;
+  color: #fff;
+  background: var(--color-text);
   z-index: 1000;
 }
 .skip-link:focus { left: 0; }
@@ -132,7 +148,6 @@ body.is-modal-open { overflow: hidden; }
   white-space: nowrap;
 }
 
-/* Navigation principale */
 .main-nav ul {
   display: flex;
   align-items: center;
@@ -140,16 +155,17 @@ body.is-modal-open { overflow: hidden; }
 }
 
 .main-nav a {
+  position: relative;
+  padding: 0.25rem 0;
   font-family: var(--font-display);
   font-size: 0.8rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-text);
-  position: relative;
-  padding: 0.25rem 0;
   transition: color var(--speed) var(--ease);
 }
 
+/* Soulignement animé au survol. */
 .main-nav a::after {
   content: "";
   position: absolute;
@@ -162,30 +178,12 @@ body.is-modal-open { overflow: hidden; }
   transform-origin: left;
   transition: transform var(--speed) var(--ease);
 }
-
 .main-nav a:hover,
 .main-nav .current-menu-item > a { color: var(--color-accent); }
 .main-nav a:hover::after { transform: scaleX(1); }
 
 /* =========================================================
-   5. Zone de contenu provisoire (étape 1)
-   Le vrai hero + catalogue arrivent à l'étape 4.
-   ========================================================= */
-.placeholder-hero {
-  padding: clamp(3rem, 10vh, 7rem) 0;
-  text-align: center;
-}
-.placeholder-hero h1 {
-  font-family: var(--font-display);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: clamp(1.75rem, 6vw, 3.5rem);
-  margin: 0 0 0.5rem;
-}
-.placeholder-hero p { color: var(--color-muted); margin: 0; }
-
-/* =========================================================
-   6. Footer
+   5. Footer
    ========================================================= */
 .site-footer {
   border-top: 1px solid var(--color-line);
@@ -212,7 +210,7 @@ body.is-modal-open { overflow: hidden; }
 .site-footer a:hover { color: var(--color-accent); }
 
 /* =========================================================
-   7. Modale de contact
+   6. Modale de contact
    ========================================================= */
 .contact-modal {
   position: fixed;
@@ -233,8 +231,8 @@ body.is-modal-open { overflow: hidden; }
 .contact-modal__panel {
   position: relative;
   width: min(620px, 100%);
-  background: var(--color-bg);
   padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 5vw, 3rem) clamp(2rem, 5vw, 3rem);
+  background: var(--color-bg);
   transform: translateY(16px);
   transition: transform var(--speed) var(--ease);
 }
@@ -248,40 +246,39 @@ body.is-modal-open { overflow: hidden; }
   height: 40px;
   display: grid;
   place-items: center;
-  background: transparent;
-  border: none;
-  color: var(--color-text);
   font-size: 1.5rem;
   line-height: 1;
+  color: var(--color-text);
+  background: transparent;
+  border: none;
   transition: transform var(--speed) var(--ease), color var(--speed) var(--ease);
 }
 .contact-modal__close:hover { transform: rotate(90deg); color: var(--color-accent); }
 
-/* Titre filigrane "CONTACT" répété (cf. maquette) */
 .contact-modal__title {
+  margin: 0 0 1.75rem;
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 700;
-  text-transform: uppercase;
   font-size: clamp(2rem, 7vw, 3rem);
   line-height: 1;
   letter-spacing: 0.02em;
+  text-transform: uppercase;
   color: var(--color-text);
-  margin: 0 0 1.75rem;
   overflow: hidden;
   white-space: nowrap;
 }
 
-/* Mise en forme du formulaire Contact Form 7 */
+/* Mise en forme du formulaire généré par Contact Form 7. */
 .contact-modal__form label,
 .contact-modal__form .wpcf7-form label {
   display: block;
+  margin: 1.1rem 0 0.4rem;
   font-family: var(--font-display);
   font-size: 0.7rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-muted);
-  margin: 1.1rem 0 0.4rem;
 }
 .contact-modal__form input,
 .contact-modal__form textarea {
@@ -315,19 +312,21 @@ body.is-modal-open { overflow: hidden; }
 .contact-modal__form input[type="submit"]:hover,
 .contact-modal__form .wpcf7-submit:hover { background: var(--color-accent); color: #fff; }
 
+/* Message affiché tant que Contact Form 7 n'est pas configuré. */
 .contact-modal__notice {
-  border: 1px dashed var(--color-line);
   padding: 1rem;
-  color: var(--color-muted);
   font-size: 0.9rem;
+  color: var(--color-muted);
+  border: 1px dashed var(--color-line);
 }
 
 /* =========================================================
-   8. Bloc photo réutilisable (catalogue + photos apparentées)
+   7. Bloc photo (catalogue + photos apparentées)
+   Photos affichées en carré, avec deux icônes au survol.
    ========================================================= */
 .photo-card {
   position: relative;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1 / 1; /* format carré demandé dans les spécifications */
   overflow: hidden;
   background: var(--color-line);
 }
@@ -342,6 +341,7 @@ body.is-modal-open { overflow: hidden; }
 }
 .photo-card:hover .photo-card__img { transform: scale(1.05); }
 
+/* Voile sombre et icônes, révélés au survol. */
 .photo-card__overlay {
   position: absolute;
   inset: 0;
@@ -351,8 +351,8 @@ body.is-modal-open { overflow: hidden; }
   gap: 1.25rem;
   background: rgba(0, 0, 0, 0.35);
   opacity: 0;
-  transition: opacity var(--speed) var(--ease);
   pointer-events: none;
+  transition: opacity var(--speed) var(--ease);
 }
 .photo-card:hover .photo-card__overlay,
 .photo-card:focus-within .photo-card__overlay { opacity: 1; pointer-events: auto; }
@@ -366,10 +366,15 @@ body.is-modal-open { overflow: hidden; }
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 50%;
-  transition: background var(--speed) var(--ease), color var(--speed) var(--ease), transform var(--speed) var(--ease);
+  transition: background var(--speed) var(--ease), border-color var(--speed) var(--ease), transform var(--speed) var(--ease);
 }
-.photo-card__icon:hover { background: var(--color-accent); border-color: var(--color-accent); transform: scale(1.08); }
+.photo-card__icon:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: scale(1.08);
+}
 
+/* Titre et catégorie, en bas de la vignette. */
 .photo-card__caption {
   position: absolute;
   left: 0;
@@ -380,11 +385,11 @@ body.is-modal-open { overflow: hidden; }
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.6rem 0.85rem;
-  color: #fff;
   font-family: var(--font-display);
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: #fff;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
   pointer-events: none;
 }
@@ -392,9 +397,120 @@ body.is-modal-open { overflow: hidden; }
 .photo-card__category { opacity: 0.85; white-space: nowrap; }
 
 /* =========================================================
-   9. Page infos d'une photo (single.php)
-   Le conteneur est porté par .photo-single ; les filets et la barre
-   d'interactions tiennent donc toute la largeur du contenu.
+   8. Hero
+   ========================================================= */
+.hero {
+  position: relative;
+  height: 70vh;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Titre en lettres évidées, comme sur la maquette. */
+.hero__titre {
+  margin: 0;
+  padding-inline: 1rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(2rem, 7vw, 5.5rem);
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 2px #fff;
+}
+
+/* =========================================================
+   9. Filtres
+   Le libellé ("Catégories") est l'option par défaut du select,
+   il n'y a donc pas d'étiquette au-dessus.
+   ========================================================= */
+.filtres {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* Le tri est repoussé à droite, les deux filtres restent groupés à gauche. */
+.filtres__select--tri { margin-left: auto; }
+
+/* Dimensions, bordure et rayon relevés sur la maquette. */
+.filtres__select {
+  width: 260px;
+  padding: 11px 44px 11px 18px; /* place réservée à droite pour le chevron */
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1.3px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color var(--speed) var(--ease);
+
+  /* Les libellés longs sont tronqués plutôt que de passer sous le chevron. */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  /* Chevron dessiné en CSS, pour remplacer celui du navigateur. */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23313144' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+}
+.filtres__select:hover { border-color: var(--color-accent); }
+
+/* =========================================================
+   10. Catalogue et bouton "Charger plus"
+   ========================================================= */
+.catalogue {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding: clamp(2rem, 6vw, 4rem) var(--gutter);
+}
+
+.catalogue__grille {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.catalogue__plus {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+
+.bouton {
+  min-width: 272px;
+  padding: 8px 15px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--color-title);
+  background: var(--color-btn);
+  border: none;
+  border-radius: 2px;
+  transition: background var(--speed) var(--ease), color var(--speed) var(--ease);
+}
+
+/* État "Hover" de la maquette : fond noir, texte blanc en gras. */
+.bouton:hover {
+  background: var(--color-title);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* =========================================================
+   11. Page infos d'une photo (single.php)
+   Trois blocs : infos à gauche, photo à droite, interactions en dessous.
    ========================================================= */
 .photo-single {
   max-width: var(--container);
@@ -406,26 +522,25 @@ body.is-modal-open { overflow: hidden; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(1.5rem, 4vw, 3rem);
-  align-items: end; /* le bloc infos s'aligne en bas de la photo */
-  padding-bottom: clamp(1rem, 3vh, 2rem); /* espace avant le 1er filet */
+  align-items: end; /* le bloc infos s'aligne sur le bas de la photo */
+  padding-bottom: clamp(1rem, 3vh, 2rem); /* espace avant le premier filet */
 }
 
 .photo-single__info { padding-bottom: 0.5rem; }
 
-/* Titre "TEAM MARIÉE" : Space Mono 400 italique, sur 2 lignes. */
+/* Titre en Space Mono 400 italique, tombant sur deux lignes. */
 .photo-single__title {
+  margin: 0 0 1.5rem;
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
-  text-transform: uppercase;
-  color: var(--color-title);
   font-size: clamp(2.5rem, 6vw, 5.5rem);
   line-height: 0.95;
-  margin: 0 0 1.5rem;
+  text-transform: uppercase;
+  color: var(--color-title);
 }
 
-/* Métadonnées "RÉFÉRENCE : BF2400" — style "description photo" du styleguide :
-   Space Mono 400, 14px, capitales, interlettrage 10 %, bien espacées. */
+/* Métadonnées "RÉFÉRENCE : BF2400" — style "description photo" du styleguide. */
 .photo-single__meta {
   margin: 0;
   padding: 0;
@@ -436,13 +551,13 @@ body.is-modal-open { overflow: hidden; }
   font-family: var(--font-display);
   font-weight: 400;
   font-size: 14px;
+  line-height: 1;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  line-height: 1;
 }
 .photo-single__meta .label { color: inherit; }
 
-/* Photo au format natif, non recadrée, contenue dans sa colonne. */
+/* Photo au format natif, jamais recadrée. */
 .photo-single__media { text-align: right; }
 .photo-single__img {
   width: 100%;
@@ -450,7 +565,7 @@ body.is-modal-open { overflow: hidden; }
   object-fit: contain;
 }
 
-/* Barre d'interactions : 1er filet à 50 % (à gauche), 2e filet pleine largeur. */
+/* Barre d'interactions : premier filet à 50 %, second sur toute la largeur. */
 .photo-single__interactions {
   position: relative;
   min-height: 118px;
@@ -459,21 +574,20 @@ body.is-modal-open { overflow: hidden; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
   flex-wrap: wrap;
-  border-bottom: 1px solid var(--color-title); /* 2e filet, pleine largeur */
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--color-title);
 }
 .photo-single__interactions::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 50%; /* 1er filet coupé à la moitié */
+  width: 50%;
   height: 1px;
   background: var(--color-title);
 }
 
-/* Contact : texte à gauche, bouton large nettement décalé à droite. */
 .photo-single__contact {
   display: flex;
   align-items: center;
@@ -485,20 +599,23 @@ body.is-modal-open { overflow: hidden; }
 }
 .photo-single__contact-btn {
   min-width: 272px;
-  text-align: center;
+  padding: 0.9rem 1rem;
   font-family: var(--font-display);
   font-weight: 400;
   font-size: 12px;
+  text-align: center;
   color: var(--color-text);
-  padding: 0.9rem 1rem; /* ~50px de haut */
   background: var(--color-btn);
   border-radius: 2px;
-  box-shadow: 0 2px 1px rgba(0, 0, 0, 0.02);
   transition: background var(--speed) var(--ease), color var(--speed) var(--ease);
 }
-.photo-single__contact-btn:hover { background: var(--color-accent); color: #fff; }
+.photo-single__contact-btn:hover {
+  background: var(--color-title);
+  color: #fff;
+  font-weight: 700;
+}
 
-/* Navigation : aperçu de la photo (toujours visible) + flèches en dessous. */
+/* Navigation : aperçu de la photo voisine, flèches en dessous. */
 .photo-single__nav {
   display: flex;
   flex-direction: column;
@@ -525,17 +642,15 @@ body.is-modal-open { overflow: hidden; }
 .photo-single__nav-arrows a:hover { color: var(--color-accent); }
 .photo-single__nav-icon { display: block; width: 36px; height: auto; }
 
-/* =========================================================
-   10. Photos apparentées
-   ========================================================= */
+/* Photos apparentées, sous la zone de contenu. */
 .related-photos { padding: clamp(2rem, 6vw, 4rem) 0; }
 .related-photos__label {
+  margin: 0 0 2.5rem;
   font-family: var(--font-display);
-  font-size: 18px; /* = H3 du styleguide */
+  font-size: 18px; /* taille du H3 dans le styleguide */
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text);
-  margin: 0 0 2.5rem;
 }
 .related-photos__grid {
   display: grid;
@@ -544,145 +659,137 @@ body.is-modal-open { overflow: hidden; }
 }
 
 /* =========================================================
-   À AJOUTER DANS style.css (avant la section Responsive)
-   Étape 4 : hero, filtres et catalogue.
+   12. Lightbox
    ========================================================= */
-
-/* ---------- Hero ---------- */
-.hero {
-  position: relative;
-  height: 70vh;
-  min-height: 420px;
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 950;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-size: cover;
-  background-position: center;
+  gap: clamp(1rem, 4vw, 4rem);
+  padding: clamp(1rem, 4vw, 3rem);
+  background: var(--color-overlay); /* noir transparent à 80 % */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--speed) var(--ease), visibility var(--speed) var(--ease);
 }
+.lightbox.is-open { opacity: 1; visibility: visible; }
 
-/* Titre en lettres évidées, comme sur la maquette. */
-.hero__titre {
+/* La photo occupe le maximum d'espace disponible, sans être recadrée. */
+.lightbox__contenu {
   margin: 0;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: clamp(2rem, 7vw, 5.5rem);
-  letter-spacing: 0.05em;
-  color: transparent;
-  -webkit-text-stroke: 2px #fff;
-  text-align: center;
-  padding-inline: 1rem;
-}
-
-/* ---------- Filtres ---------- */
-.catalogue {
-  max-width: var(--container);
-  margin-inline: auto;
-  padding: clamp(2rem, 6vw, 4rem) var(--gutter);
-}
-
-/* ---------- Filtres ---------- */
-.filtres {
   display: flex;
-  align-items: center;
-  gap: clamp(1rem, 3vw, 2.5rem);
-  margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 70vw;
+}
+.lightbox__image {
+  max-width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
 }
 
-/* Le tri est repoussé à droite, les deux filtres restent groupés à gauche. */
-.filtres__select--tri { margin-left: auto; }
-
-/* Dimensions et bordure relevées sur la maquette Figma. */
-.filtres__select {
-  width: 260px;
-  padding: 11px 44px 11px 18px; /* place réservée à droite pour le chevron */
+/* Légende : référence à gauche, catégorie à droite. */
+.lightbox__legende {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
   font-family: var(--font-display);
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text);
-  background: var(--color-bg);
-  border: 1.3px solid #b8bbc2;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color var(--speed) var(--ease);
-
-  /* Le texte des options longues est tronqué proprement plutôt que
-     de passer sous le chevron. */
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  /* Chevron personnalisé : on masque celui du navigateur pour garder
-     exactement le même repère visuel que la maquette. */
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23313144' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 18px center;
+  color: #fff;
 }
 
-/* ---------- Grille du catalogue ---------- */
-.catalogue__grille {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: clamp(0.75rem, 2vw, 1.5rem);
-}
-
-/* ---------- Bouton "Charger plus" ---------- */
-.catalogue__plus {
+.lightbox__nav {
   display: flex;
-  justify-content: center;
-  margin-top: clamp(2rem, 5vw, 3rem);
-}
-
-.bouton {
-  min-width: 272px;
-  padding: 0.9rem 1rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
   font-family: var(--font-display);
   font-weight: 400;
   font-size: 12px;
-  color: var(--color-text);
-  background: var(--color-btn);
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: transparent;
   border: none;
-  border-radius: 2px;
-  transition: background var(--speed) var(--ease), color var(--speed) var(--ease);
+  transition: color var(--speed) var(--ease);
 }
-.bouton:hover { background: var(--color-accent); color: #fff; }
+.lightbox__nav svg { transition: transform var(--speed) var(--ease); }
+
+/* État "Hover" de la maquette : le libellé s'épaissit, la flèche s'allonge
+   vers l'extérieur (d'où le transform-origin opposé selon le sens). */
+.lightbox__nav:hover { font-weight: 700; }
+.lightbox__nav--prec:hover svg { transform: scaleX(1.25); transform-origin: left; }
+.lightbox__nav--suiv:hover svg { transform: scaleX(1.25); transform-origin: right; }
+
+.lightbox__fermer {
+  position: absolute;
+  top: clamp(1rem, 3vw, 2rem);
+  right: clamp(1rem, 3vw, 2rem);
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  line-height: 1;
+  color: #fff;
+  background: transparent;
+  border: none;
+  transition: transform var(--speed) var(--ease), color var(--speed) var(--ease);
+}
+.lightbox__fermer:hover { transform: rotate(90deg); color: var(--color-accent); }
 
 /* =========================================================
-   11. Responsive
+   13. Responsive
    ========================================================= */
-@media (max-width: 640px) {
-  .site-header__inner { flex-direction: column; gap: 0.75rem; padding-block: 1rem; }
-  .main-nav ul { gap: 1.25rem; }
-}
-
 @media (max-width: 780px) {
-  /* Single photo : on empile infos puis photo au lieu du 50/50. */
-  .photo-single__content { grid-template-columns: 1fr; }
-  .photo-single__media { text-align: left; }
-  .photo-single__media .photo-single__img { max-height: 70vh; }
-  .photo-single__interactions { flex-direction: column; align-items: stretch; gap: 1.25rem; padding-block: 1.25rem; min-height: auto; }
-  .photo-single__contact { flex-direction: column; align-items: stretch; gap: 0.75rem; }
-  .photo-single__contact-btn { min-width: 0; width: 100%; }
-  .photo-single__nav { align-items: flex-start; }
-
-  .related-photos__grid { grid-template-columns: 1fr; }
-}
-
-/* Respect de prefers-reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; scroll-behavior: auto !important; }
-}
-
-/* Hero */
-@media (max-width: 780px) {
+  /* Filtres et catalogue : tout s'empile sur une colonne. */
   .filtres { flex-direction: column; align-items: stretch; }
   .filtres__select { width: 100%; }
   .filtres__select--tri { margin-left: 0; }
 
   .catalogue__grille { grid-template-columns: 1fr; }
   .bouton { width: 100%; min-width: 0; }
+
+  /* Page infos : infos puis photo, au lieu du 50/50. */
+  .photo-single__content { grid-template-columns: 1fr; }
+  .photo-single__media { text-align: left; }
+  .photo-single__media .photo-single__img { max-height: 70vh; }
+  .photo-single__interactions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.25rem;
+    padding-block: 1.25rem;
+    min-height: auto;
+  }
+  .photo-single__contact { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+  .photo-single__contact-btn { width: 100%; min-width: 0; }
+  .photo-single__nav { align-items: flex-start; }
+
+  .related-photos__grid { grid-template-columns: 1fr; }
+
+  /* Lightbox : les libellés des flèches prennent trop de place,
+     on ne garde que les icônes de part et d'autre de la photo. */
+  .lightbox { gap: 0.5rem; padding: 1rem; }
+  .lightbox__contenu { max-width: 100%; }
+  .lightbox__nav span { display: none; }
+}
+
+@media (max-width: 640px) {
+  .site-header__inner { flex-direction: column; gap: 0.75rem; padding-block: 1rem; }
+  .main-nav ul { gap: 1.25rem; }
+}
+
+/* Les animations sont désactivées pour qui en fait la demande système. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

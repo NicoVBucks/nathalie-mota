@@ -2,18 +2,18 @@
 /**
  * Bloc d'affichage d'une photo (carte).
  *
- * Réutilisé dans la boucle des photos apparentées (single.php) et dans le
- * catalogue de la page d'accueil (étape 4). S'appuie sur la photo courante
- * de la boucle WordPress.
+ * Réutilisé dans le catalogue de la page d'accueil et dans la zone des photos
+ * apparentées du template single. S'appuie sur la photo courante de la boucle.
  *
  * Au survol : un œil (lien vers la page infos) et une icône plein écran
- * (ouverture de la lightbox, branchée à l'étape 5).
+ * (ouverture de la lightbox).
  */
 
-$categorie = get_the_terms( get_the_ID(), 'categorie' );
+$categorie     = get_the_terms( get_the_ID(), 'categorie' );
 $categorie_nom = $categorie ? $categorie[0]->name : '';
+$reference     = get_field( 'reference' );
 
-// URL grand format, lue par la lightbox à l'étape 5.
+// URL en grand format : c'est cette image que la lightbox affichera.
 $image_large = get_the_post_thumbnail_url( get_the_ID(), 'photo_large' );
 ?>
 
@@ -32,10 +32,13 @@ $image_large = get_the_post_thumbnail_url( get_the_ID(), 'photo_large' );
 			</svg>
 		</a>
 
+		<?php // Les données de la photo sont portées par le bouton : le JavaScript
+		      // les lit pour remplir la lightbox, sans nouvel appel au serveur. ?>
 		<button type="button" class="photo-card__icon js-open-lightbox"
-			data-full="<?php echo esc_url( $image_large ); ?>"
-			data-title="<?php the_title_attribute(); ?>"
-			data-category="<?php echo esc_attr( $categorie_nom ); ?>"
+			data-image="<?php echo esc_url( $image_large ); ?>"
+			data-reference="<?php echo esc_attr( $reference ); ?>"
+			data-categorie="<?php echo esc_attr( $categorie_nom ); ?>"
+			data-titre="<?php the_title_attribute(); ?>"
 			aria-label="Afficher la photo en plein écran">
 			<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
 				<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

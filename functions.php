@@ -89,6 +89,16 @@ function nathaliemota_assets() {
 		true
 	);
 
+	// Lightbox : utilisée sur la page d'accueil et sur les pages photo.
+	wp_enqueue_script(
+		'nathaliemota-lightbox',
+		get_template_directory_uri() . '/js/lightbox.js',
+		array(),
+		NATHALIEMOTA_VERSION,
+		true
+	);
+
+
 	// Script du catalogue : chargé uniquement sur la page d'accueil, seule page
 	// qui en a besoin (on évite d'envoyer du JavaScript inutile ailleurs).
 	if ( is_front_page() ) {
