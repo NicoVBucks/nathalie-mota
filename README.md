@@ -59,8 +59,8 @@ nathalie-mota/
 ## Suivi des étapes
 
 - [x] Étape 1 — Thème, header, footer, modale de contact
-- [ ] Étape 2 — Structure de contenu (CPT « photo », taxonomies, champs)
-- [ ] Étape 3 — Template single
+- [x] Étape 2 — Structure de contenu (CPT « photo », taxonomies, champs)
+- [x] Étape 3 — Template single
 - [ ] Étape 4 — Page d'accueil (hero, filtres, catalogue, pagination Ajax)
 - [ ] Étape 5 — Lightbox
 - [ ] Étape 6 — Export du site
