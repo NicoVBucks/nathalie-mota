@@ -582,41 +582,44 @@ body.is-modal-open { overflow: hidden; }
   padding: clamp(2rem, 6vw, 4rem) var(--gutter);
 }
 
+/* ---------- Filtres ---------- */
 .filtres {
   display: flex;
-  align-items: flex-end;
-  gap: clamp(1rem, 3vw, 2rem);
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.5rem);
   margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
 }
 
-/* Le tri est repoussé à droite, les deux filtres restent à gauche. */
-.filtres__groupe--tri { margin-left: auto; }
+/* Le tri est repoussé à droite, les deux filtres restent groupés à gauche. */
+.filtres__select--tri { margin-left: auto; }
 
-.filtres__label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-family: var(--font-display);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-text);
-}
-
+/* Dimensions et bordure relevées sur la maquette Figma. */
 .filtres__select {
-  min-width: 260px;
-  padding: 0.85rem 1rem;
+  width: 260px;
+  padding: 11px 44px 11px 18px; /* place réservée à droite pour le chevron */
   font-family: var(--font-display);
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text);
   background: var(--color-bg);
-  border: 1px solid var(--color-title);
-  border-radius: 2px;
+  border: 1.3px solid #b8bbc2;
+  border-radius: 8px;
   cursor: pointer;
   transition: border-color var(--speed) var(--ease);
+
+  /* Le texte des options longues est tronqué proprement plutôt que
+     de passer sous le chevron. */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  /* Chevron personnalisé : on masque celui du navigateur pour garder
+     exactement le même repère visuel que la maquette. */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23313144' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
 }
-.filtres__select:hover { border-color: var(--color-accent); }
 
 /* ---------- Grille du catalogue ---------- */
 .catalogue__grille {
@@ -677,8 +680,8 @@ body.is-modal-open { overflow: hidden; }
 /* Hero */
 @media (max-width: 780px) {
   .filtres { flex-direction: column; align-items: stretch; }
-  .filtres__groupe--tri { margin-left: 0; }
-  .filtres__select { width: 100%; min-width: 0; }
+  .filtres__select { width: 100%; }
+  .filtres__select--tri { margin-left: 0; }
 
   .catalogue__grille { grid-template-columns: 1fr; }
   .bouton { width: 100%; min-width: 0; }
