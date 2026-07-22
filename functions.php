@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! defined( 'NATHALIEMOTA_VERSION' ) ) {
 	// Pensez à incrémenter à chaque mise en production (cache busting).
-	define( 'NATHALIEMOTA_VERSION', '0.5.0' );
+	define( 'NATHALIEMOTA_VERSION', '1.0.1' );
 }
 
 // Identifiant du formulaire Contact Form 7 utilisé dans la modale.
@@ -98,10 +98,20 @@ function nathaliemota_assets() {
 		true
 	);
 
-
-	// Script du catalogue : chargé uniquement sur la page d'accueil, seule page
-	// qui en a besoin (on évite d'envoyer du JavaScript inutile ailleurs).
+	// Les scripts ci-dessous ne servent qu'à la page d'accueil : on évite
+	// d'envoyer du JavaScript inutile sur le reste du site (Green Code).
 	if ( is_front_page() ) {
+
+		// Listes déroulantes personnalisées des filtres.
+		wp_enqueue_script(
+			'nathaliemota-filtres',
+			get_template_directory_uri() . '/js/filtres.js',
+			array(),
+			NATHALIEMOTA_VERSION,
+			true
+		);
+
+		// Catalogue : filtres, tri et pagination "Charger plus" en Ajax.
 		wp_enqueue_script(
 			'nathaliemota-catalogue',
 			get_template_directory_uri() . '/js/catalogue.js',
@@ -242,12 +252,19 @@ add_action( 'wp_ajax_filtrer_photos', 'nathaliemota_filtrer_photos' );
 add_action( 'wp_ajax_nopriv_filtrer_photos', 'nathaliemota_filtrer_photos' );
 
 /**
- * Menu de secours affiché tant que le menu "Menu principal" n'a pas été créé
- * dans Apparence > Menus. Ne sert qu'au confort de développement.
+ * Menu de secours, affiché tant qu'aucun menu n'a été assigné à l'emplacement
+ * "Menu principal" dans Apparence > Menus.
  */
 function nathaliemota_fallback_menu() {
+	$a_propos = get_page_by_path( 'a-propos' );
+
 	echo '<ul id="main-menu" class="menu">';
-	echo '<li><a href="' . esc_url( home_url( '/' ) ) . '">' . esc_html__( 'Accueil', 'nathaliemota' ) . '</a></li>';
-	echo '<li><a href="#contact" class="js-open-contact">' . esc_html__( 'Contact', 'nathaliemota' ) . '</a></li>';
+	echo '<li><a href="' . esc_url( home_url( '/' ) ) . '">Accueil</a></li>';
+
+	if ( $a_propos ) {
+		echo '<li><a href="' . esc_url( get_permalink( $a_propos ) ) . '">À propos</a></li>';
+	}
+
+	echo '<li><a href="#contact" class="js-open-contact">Contact</a></li>';
 	echo '</ul>';
 }

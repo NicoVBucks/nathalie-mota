@@ -31,6 +31,29 @@ if ( $photo_hero->have_posts() ) {
 	$image_hero = get_the_post_thumbnail_url( get_the_ID(), 'full' );
 	wp_reset_postdata();
 }
+
+/**
+ * Prépare la liste des choix d'un filtre à partir d'une taxonomie.
+ * Les termes sont lus en base : une nouvelle catégorie créée dans
+ * l'administration apparaît donc automatiquement dans le filtre.
+ */
+function nathaliemota_options_taxonomie( $taxonomie ) {
+	$options = array();
+	$termes  = get_terms(
+		array(
+			'taxonomy'   => $taxonomie,
+			'hide_empty' => false,
+		)
+	);
+
+	if ( ! is_wp_error( $termes ) ) {
+		foreach ( $termes as $terme ) {
+			$options[ $terme->slug ] = $terme->name;
+		}
+	}
+
+	return $options;
+}
 ?>
 
 <section class="hero" style="background-image: url('<?php echo esc_url( $image_hero ); ?>');">
@@ -39,43 +62,43 @@ if ( $photo_hero->have_posts() ) {
 
 <section class="catalogue">
 
-	<!-- Filtres : les listes sont remplies dynamiquement depuis les taxonomies,
-	     pour que les nouveaux termes créés en back-office apparaissent seuls. -->
 	<div class="filtres">
 
 		<?php
-		// Le libellé du filtre ("Catégories") est l'option par défaut du select,
-		// conformément à la maquette : il n'y a pas d'étiquette au-dessus.
-		wp_dropdown_categories(
+		get_template_part(
+			'template-parts/filtre',
+			null,
 			array(
-				'taxonomy'        => 'categorie',
-				'name'            => 'filtre-categorie',
-				'id'              => 'filtre-categorie',
-				'show_option_all' => 'Catégories',
-				'value_field'     => 'slug',
-				'hide_empty'      => false,
-				'class'           => 'filtres__select',
+				'id'      => 'filtre-categorie',
+				'libelle' => 'Catégories',
+				'options' => nathaliemota_options_taxonomie( 'categorie' ),
 			)
 		);
 
-		wp_dropdown_categories(
+		get_template_part(
+			'template-parts/filtre',
+			null,
 			array(
-				'taxonomy'        => 'format',
-				'name'            => 'filtre-format',
-				'id'              => 'filtre-format',
-				'show_option_all' => 'Formats',
-				'value_field'     => 'slug',
-				'hide_empty'      => false,
-				'class'           => 'filtres__select',
+				'id'      => 'filtre-format',
+				'libelle' => 'Formats',
+				'options' => nathaliemota_options_taxonomie( 'format' ),
+			)
+		);
+
+		get_template_part(
+			'template-parts/filtre',
+			null,
+			array(
+				'id'      => 'filtre-tri',
+				'libelle' => 'Trier par',
+				'classe'  => 'filtre--tri',
+				'options' => array(
+					'DESC' => 'Plus récentes',
+					'ASC'  => 'Plus anciennes',
+				),
 			)
 		);
 		?>
-
-		<select name="filtre-tri" id="filtre-tri" class="filtres__select filtres__select--tri">
-			<option value="">Trier par</option>
-			<option value="DESC">Plus récentes</option>
-			<option value="ASC">Plus anciennes</option>
-		</select>
 
 	</div>
 

@@ -53,7 +53,7 @@ Text Domain: nathaliemota
   /* Échelle et rythme */
   --container: 1280px;
   --gutter:    clamp(1rem, 4vw, 2.5rem);
-  --header-h:  72px;
+  --header-h:  80px;
 
   /* Transitions : toutes les animations du thème sont en CSS. */
   --ease:  cubic-bezier(0.4, 0, 0.2, 1);
@@ -126,8 +126,11 @@ body.is-modal-open { overflow: hidden; }
    4. Header
    ========================================================= */
 .site-header {
+  position: relative;
+  z-index: 10; /* l'ombre passe au-dessus du contenu qui suit */
   background: var(--color-bg);
-  border-bottom: 1px solid var(--color-line);
+  /* Ombre portée relevée dans Figma : X 0, Y 4, flou 14, étendue 10, noir 3 %. */
+  box-shadow: 0 4px 14px 10px rgba(0, 0, 0, 0.03);
 }
 
 .site-header__inner {
@@ -155,32 +158,20 @@ body.is-modal-open { overflow: hidden; }
 }
 
 .main-nav a {
-  position: relative;
   padding: 0.25rem 0;
   font-family: var(--font-display);
-  font-size: 0.8rem;
-  letter-spacing: 0.16em;
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: 0;
   text-transform: uppercase;
-  color: var(--color-text);
-  transition: color var(--speed) var(--ease);
+  color: var(--color-title);
+  transition: font-weight var(--speed) var(--ease);
 }
 
-/* Soulignement animé au survol. */
-.main-nav a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  width: 100%;
-  height: 1px;
-  background: var(--color-accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--speed) var(--ease);
-}
+/* État "Hover" de la maquette : le libellé s'épaissit, sans autre changement. */
 .main-nav a:hover,
-.main-nav .current-menu-item > a { color: var(--color-accent); }
-.main-nav a:hover::after { transform: scaleX(1); }
+.main-nav .current-menu-item > a { font-weight: 700; }
+
 
 /* =========================================================
    5. Footer
@@ -201,10 +192,11 @@ body.is-modal-open { overflow: hidden; }
 .site-footer a,
 .site-footer span {
   font-family: var(--font-display);
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: 0;
   text-transform: uppercase;
-  color: var(--color-text);
+  color: var(--color-title);
 }
 .site-footer a { transition: color var(--speed) var(--ease); }
 .site-footer a:hover { color: var(--color-accent); }
@@ -274,43 +266,56 @@ body.is-modal-open { overflow: hidden; }
 .contact-modal__form .wpcf7-form label {
   display: block;
   margin: 1.1rem 0 0.4rem;
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
+  font-family: var(--font-body);
+  font-weight: 500; /* Poppins Medium */
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0;
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--color-text); /* navy #313144 */
 }
+
+/* Champs : bordure grise arrondie, comme les listes déroulantes. */
 .contact-modal__form input,
 .contact-modal__form textarea {
   width: 100%;
+  margin-top: 0.75rem;
   padding: 0.7rem 0.85rem;
-  font: inherit;
+  font-family: var(--font-body);
+  font-size: 14px;
   color: var(--color-text);
   background: var(--color-bg);
-  border: 1px solid var(--color-line);
-  border-radius: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
   transition: border-color var(--speed) var(--ease);
 }
 .contact-modal__form input:focus,
 .contact-modal__form textarea:focus { border-color: var(--color-accent); outline: none; }
 .contact-modal__form textarea { min-height: 130px; resize: vertical; }
 
+/* Bouton "Envoyer" : mêmes codes que les autres boutons du site. */
 .contact-modal__form input[type="submit"],
 .contact-modal__form .wpcf7-submit {
   width: 100%;
   margin-top: 1.5rem;
-  padding: 0.85rem 1rem;
+  padding: 0.9rem 1rem;
   font-family: var(--font-display);
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-text);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-title);
   background: var(--color-btn);
   border: none;
+  border-radius: 2px;
   transition: background var(--speed) var(--ease), color var(--speed) var(--ease);
 }
 .contact-modal__form input[type="submit"]:hover,
-.contact-modal__form .wpcf7-submit:hover { background: var(--color-accent); color: #fff; }
+.contact-modal__form .wpcf7-submit:hover {
+  background: var(--color-title);
+  color: #fff;
+  font-weight: 700;
+}
 
 /* Message affiché tant que Contact Form 7 n'est pas configuré. */
 .contact-modal__notice {
@@ -427,8 +432,9 @@ body.is-modal-open { overflow: hidden; }
 
 /* =========================================================
    9. Filtres
-   Le libellé ("Catégories") est l'option par défaut du select,
-   il n'y a donc pas d'étiquette au-dessus.
+   Le <select> natif est masqué : ses <option> ne peuvent pas être
+   stylées. La liste visible est reconstruite en HTML pour obtenir
+   le surlignement rouge de la maquette.
    ========================================================= */
 .filtres {
   display: flex;
@@ -437,13 +443,35 @@ body.is-modal-open { overflow: hidden; }
   margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
 }
 
-/* Le tri est repoussé à droite, les deux filtres restent groupés à gauche. */
-.filtres__select--tri { margin-left: auto; }
-
-/* Dimensions, bordure et rayon relevés sur la maquette. */
-.filtres__select {
+.filtre {
+  position: relative;
   width: 260px;
-  padding: 11px 44px 11px 18px; /* place réservée à droite pour le chevron */
+}
+
+/* Le tri est repoussé à droite, les deux filtres restent groupés à gauche. */
+.filtre--tri { margin-left: auto; }
+
+/* Select réel : invisible, mais toujours dans la page (accessibilité, Ajax). */
+.filtre__select {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Bouton visible, aux mesures de la maquette. */
+.filtre__bouton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 18px;
   font-family: var(--font-display);
   font-size: 12px;
   letter-spacing: 0.1em;
@@ -452,20 +480,52 @@ body.is-modal-open { overflow: hidden; }
   background: var(--color-bg);
   border: 1.3px solid var(--color-border);
   border-radius: 8px;
-  cursor: pointer;
   transition: border-color var(--speed) var(--ease);
-
-  /* Les libellés longs sont tronqués plutôt que de passer sous le chevron. */
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  /* Chevron dessiné en CSS, pour remplacer celui du navigateur. */
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23313144' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 18px center;
 }
-.filtres__select:hover { border-color: var(--color-accent); }
+.filtre__bouton:hover { border-color: var(--color-accent); }
+
+.filtre__valeur { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Le chevron pivote quand la liste est ouverte. */
+.filtre__chevron {
+  flex-shrink: 0;
+  transition: transform var(--speed) var(--ease);
+}
+.filtre.is-open .filtre__chevron { transform: rotate(180deg); }
+
+/* Liste des choix, sous le bouton. */
+.filtre__liste {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  margin: 0;
+  padding: 0.5rem 0;
+  list-style: none;
+  background: var(--color-bg);
+  border: 1.3px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Item survolé ou sélectionné : fond rouge, texte blanc (cf. maquette). */
+.filtre__option {
+  padding: 11px 24px;
+  font-family: var(--font-body);
+  font-weight: 500; /* Poppins Medium */
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.03em;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background var(--speed) var(--ease), color var(--speed) var(--ease);
+}
+.filtre__option:hover,
+.filtre__option.is-selected {
+  background: var(--color-accent);
+  color: #fff;
+}
 
 /* =========================================================
    10. Catalogue et bouton "Charger plus"
@@ -748,8 +808,8 @@ body.is-modal-open { overflow: hidden; }
 @media (max-width: 780px) {
   /* Filtres et catalogue : tout s'empile sur une colonne. */
   .filtres { flex-direction: column; align-items: stretch; }
-  .filtres__select { width: 100%; }
-  .filtres__select--tri { margin-left: 0; }
+  .filtre { width: 100%; }
+  .filtre--tri { margin-left: 0; }
 
   .catalogue__grille { grid-template-columns: 1fr; }
   .bouton { width: 100%; min-width: 0; }

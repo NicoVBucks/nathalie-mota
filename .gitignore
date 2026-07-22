@@ -7,9 +7,14 @@ Thumbs.db
 .vscode/
 *.sublime-*
 
-# Dépendances éventuelles
+# Dépendances
 node_modules/
 vendor/
+
+# Fichiers de travail, hors livrable
+docs/
+CLAUDE.md
+import-photos.php
 
 # Build
 *.log
