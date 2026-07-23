@@ -8,30 +8,49 @@
 get_header();
 
 // --- Hero -------------------------------------------------------------------
-// Une photo au hasard parmi les photos au format paysage, pour que le hero
-// change à chaque visite sans avoir à coder une image en dur.
-$photo_hero = new WP_Query(
-	array(
-		'post_type'      => 'photo',
-		'posts_per_page' => 1,
-		'orderby'        => 'rand',
-		'tax_query'      => array(
-			array(
-				'taxonomy' => 'format',
-				'field'    => 'slug',
-				'terms'    => 'paysage',
-			),
-		),
-	)
-);
-
+// L'image est choisie par Nathalie elle-même, via le champ SCF "image_hero"
+// posé sur la page d'accueil. Elle peut donc changer la photo d'ouverture de
+// son site sans développeur.
 $image_hero = '';
-if ( $photo_hero->have_posts() ) {
-	$photo_hero->the_post();
-	// photo_large (1600 px) et non 'full' : le hero est décoratif, servir
-	// l'original de Nathalie serait plusieurs mégaoctets pour rien (Green Code).
-	$image_hero = get_the_post_thumbnail_url( get_the_ID(), 'photo_large' );
-	wp_reset_postdata();
+$choix_hero = get_field( 'image_hero' );
+
+// Selon son réglage, le champ renvoie un tableau ou un identifiant : on se
+// ramène à l'identifiant pour demander nous-mêmes la taille voulue.
+if ( is_array( $choix_hero ) ) {
+	$choix_hero = $choix_hero['ID'] ?? 0;
+}
+
+if ( $choix_hero ) {
+	// photo_large (1600 px) et non l'original : le hero est décoratif, servir
+	// le fichier d'origine serait plusieurs mégaoctets pour rien (Green Code).
+	$image_hero = wp_get_attachment_image_url( $choix_hero, 'photo_large' );
+}
+
+// Repli tant qu'aucune image n'a été choisie : la photo paysage la plus
+// récente. Un tri par date plutôt qu'aléatoire, pour que la page reste
+// identique d'une visite à l'autre — donc cachable par l'hébergeur.
+if ( ! $image_hero ) {
+	$photo_hero = new WP_Query(
+		array(
+			'post_type'      => 'photo',
+			'posts_per_page' => 1,
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+			'tax_query'      => array(
+				array(
+					'taxonomy' => 'format',
+					'field'    => 'slug',
+					'terms'    => 'paysage',
+				),
+			),
+		)
+	);
+
+	if ( $photo_hero->have_posts() ) {
+		$photo_hero->the_post();
+		$image_hero = get_the_post_thumbnail_url( get_the_ID(), 'photo_large' );
+		wp_reset_postdata();
+	}
 }
 
 /**
