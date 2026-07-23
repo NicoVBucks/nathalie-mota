@@ -11,6 +11,12 @@ Thumbs.db
 node_modules/
 vendor/
 
+# Secrets et configuration locale — ne doivent jamais partir dans le dépôt
+.env
+.env.*
+.claude/
+settings.local.json
+
 # Fichiers de travail, hors livrable
 docs/
 CLAUDE.md

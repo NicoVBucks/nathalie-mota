@@ -15,7 +15,11 @@ if ( ! defined( 'NATHALIEMOTA_VERSION' ) ) {
 }
 
 // Identifiant du formulaire Contact Form 7 utilisé dans la modale.
-define( 'NATHALIEMOTA_CF7_ID', '87dea4d' );
+// Valeur par défaut, propre à cette installation : elle peut être surchargée
+// depuis wp-config.php pour ne pas figer le thème sur un formulaire donné.
+if ( ! defined( 'NATHALIEMOTA_CF7_ID' ) ) {
+	define( 'NATHALIEMOTA_CF7_ID', '87dea4d' );
+}
 
 /**
  * Réglages de base du thème.
