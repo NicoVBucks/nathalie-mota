@@ -12,62 +12,45 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: nathaliemota
 */
 
-/* =========================================================
-   SOMMAIRE
-   1.  Design tokens
-   2.  Reset
-   3.  Layout
-   4.  Header
-   5.  Footer
-   6.  Modale de contact
-   7.  Bloc photo (catalogue + photos apparentées)
-   8.  Hero
-   9.  Filtres
-   10. Catalogue et bouton "Charger plus"
-   11. Page infos d'une photo
-   12. Lightbox
-   13. Responsive
-   ========================================================= */
-
-/* =========================================================
-   1. Design tokens
-   Couleurs et typographie relevées sur le styleguide Figma.
-   Tout le thème en hérite : changer une valeur ici suffit.
-   ========================================================= */
+/* 1. Couleurs et typographies  */
 :root {
   /* Couleurs */
-  --color-bg:           #ffffff;
-  --color-text:         #313144; /* navy — texte courant & navigation */
-  --color-title:        #000000; /* noir — titres et filets */
-  --color-muted:        #6b6b6b; /* gris des légendes */
-  --color-line:         #e5e5e5; /* séparateurs discrets */
-  --color-border:       #b8bbc2; /* bordure des listes déroulantes */
-  --color-btn:          #d8d8d8; /* fond des boutons */
-  --color-accent:       #e00000; /* rouge — logo & accents */
-  --color-overlay:      rgba(0, 0, 0, 0.8); /* fond lightbox / modale (noir 80 %) */
+  --color-bg: #ffffff;
+  --color-text: #313144; /* navy — texte courant & navigation */
+  --color-title: #000000; /* noir — titres et filets */
+  --color-muted: #6b6b6b; /* gris des légendes */
+  --color-line: #e5e5e5; /* séparateurs discrets */
+  --color-border: #b8bbc2; /* bordure des listes déroulantes */
+  --color-btn: #d8d8d8; /* fond des boutons */
+  --color-accent: #e00000; /* rouge — logo & accents */
+  --color-overlay: rgba(0, 0, 0, 0.8); /* fond lightbox / modale (noir 80 %) */
 
   /* Typographie : Space Mono pour l'affichage, Poppins pour le corps. */
   --font-display: "Space Mono", "Courier New", monospace;
-  --font-body:    "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body:
+    "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
   /* Échelle et rythme */
   --container: 1280px;
-  --gutter:    clamp(1rem, 4vw, 2.5rem);
-  --header-h:  80px;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --header-h: 80px;
 
   /* Transitions : toutes les animations du thème sont en CSS. */
-  --ease:  cubic-bezier(0.4, 0, 0.2, 1);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --speed: 0.3s;
 }
 
-/* =========================================================
-   2. Reset
-   ========================================================= */
+/* 2. Reset */
 *,
 *::before,
-*::after { box-sizing: border-box; }
+*::after {
+  box-sizing: border-box;
+}
 
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
 
 body {
   margin: 0;
@@ -81,16 +64,32 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-img { max-width: 100%; height: auto; display: block; }
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
 
-a { color: inherit; text-decoration: none; }
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
-button { font: inherit; cursor: pointer; }
+button {
+  font: inherit;
+  cursor: pointer;
+}
 
-ul { list-style: none; margin: 0; padding: 0; }
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 
 /* Empêche le défilement de la page quand une modale est ouverte. */
-body.is-modal-open { overflow: hidden; }
+body.is-modal-open {
+  overflow: hidden;
+}
 
 /* Accessibilité : le focus clavier reste visible. */
 :where(a, button, input, textarea, [tabindex]):focus-visible {
@@ -108,11 +107,11 @@ body.is-modal-open { overflow: hidden; }
   background: var(--color-text);
   z-index: 1000;
 }
-.skip-link:focus { left: 0; }
+.skip-link:focus {
+  left: 0;
+}
 
-/* =========================================================
-   3. Layout
-   ========================================================= */
+/* 3. Layout */
 .container {
   width: 100%;
   max-width: var(--container);
@@ -120,11 +119,11 @@ body.is-modal-open { overflow: hidden; }
   padding-inline: var(--gutter);
 }
 
-.site-main { min-height: 40vh; }
+.site-main {
+  min-height: 40vh;
+}
 
-/* =========================================================
-   4. Header
-   ========================================================= */
+/* 4. Header */
 .site-header {
   position: relative;
   z-index: 10; /* l'ombre passe au-dessus du contenu qui suit */
@@ -170,7 +169,9 @@ body.is-modal-open { overflow: hidden; }
 
 /* État "Hover" de la maquette : le libellé s'épaissit, sans autre changement. */
 .main-nav a:hover,
-.main-nav .current-menu-item > a { font-weight: 700; }
+.main-nav .current-menu-item > a {
+  font-weight: 700;
+}
 
 /* Bouton du menu mobile : absent du desktop, affiché par la section 13.
    Les trois barres se transforment en croix, entièrement en CSS. */
@@ -195,22 +196,35 @@ body.is-modal-open { overflow: hidden; }
   width: 100%;
   height: 2px;
   background: currentColor;
-  transition: transform var(--speed) var(--ease), background var(--speed) var(--ease);
+  transition:
+    transform var(--speed) var(--ease),
+    background var(--speed) var(--ease);
 }
 
-.menu-burger__barres { top: 15px; }
-.menu-burger__barres::before { content: ""; transform: translateY(-9px); }
-.menu-burger__barres::after  { content: ""; transform: translateY(9px); }
+.menu-burger__barres {
+  top: 15px;
+}
+.menu-burger__barres::before {
+  content: "";
+  transform: translateY(-9px);
+}
+.menu-burger__barres::after {
+  content: "";
+  transform: translateY(9px);
+}
 
 /* Menu ouvert : la barre centrale s'efface, les deux autres se croisent. */
-.menu-burger[aria-expanded="true"] .menu-burger__barres { background: transparent; }
-.menu-burger[aria-expanded="true"] .menu-burger__barres::before { transform: rotate(45deg); }
-.menu-burger[aria-expanded="true"] .menu-burger__barres::after  { transform: rotate(-45deg); }
+.menu-burger[aria-expanded="true"] .menu-burger__barres {
+  background: transparent;
+}
+.menu-burger[aria-expanded="true"] .menu-burger__barres::before {
+  transform: rotate(45deg);
+}
+.menu-burger[aria-expanded="true"] .menu-burger__barres::after {
+  transform: rotate(-45deg);
+}
 
-
-/* =========================================================
-   5. Footer
-   ========================================================= */
+/* 5. Footer */
 .site-footer {
   /* Filet de séparation : noir 100 %, comme les autres filets du thème. */
   border-top: 2px solid var(--color-title);
@@ -234,12 +248,14 @@ body.is-modal-open { overflow: hidden; }
   text-transform: uppercase;
   color: var(--color-title);
 }
-.site-footer a { transition: color var(--speed) var(--ease); }
-.site-footer a:hover { color: var(--color-accent); }
+.site-footer a {
+  transition: color var(--speed) var(--ease);
+}
+.site-footer a:hover {
+  color: var(--color-accent);
+}
 
-/* =========================================================
-   6. Modale de contact
-   ========================================================= */
+/* 6. Modale de contact */
 .contact-modal {
   position: fixed;
   inset: 0;
@@ -252,19 +268,27 @@ body.is-modal-open { overflow: hidden; }
   background: var(--color-overlay);
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--speed) var(--ease), visibility var(--speed) var(--ease);
+  transition:
+    opacity var(--speed) var(--ease),
+    visibility var(--speed) var(--ease);
 }
-.contact-modal.is-open { opacity: 1; visibility: visible; }
+.contact-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+}
 
 .contact-modal__panel {
   position: relative;
   width: min(620px, 100%);
-  padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 5vw, 3rem) clamp(2rem, 5vw, 3rem);
+  padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 5vw, 3rem)
+    clamp(2rem, 5vw, 3rem);
   background: var(--color-bg);
   transform: translateY(16px);
   transition: transform var(--speed) var(--ease);
 }
-.contact-modal.is-open .contact-modal__panel { transform: translateY(0); }
+.contact-modal.is-open .contact-modal__panel {
+  transform: translateY(0);
+}
 
 /* Pastille blanche et z-index : sans quoi la croix, en navy, se perdrait
    par-dessus les lettres noires de la bande décorative. */
@@ -283,9 +307,14 @@ body.is-modal-open { overflow: hidden; }
   background: var(--color-bg);
   border: none;
   border-radius: 50%;
-  transition: transform var(--speed) var(--ease), color var(--speed) var(--ease);
+  transition:
+    transform var(--speed) var(--ease),
+    color var(--speed) var(--ease);
 }
-.contact-modal__close:hover { transform: rotate(90deg); color: var(--color-accent); }
+.contact-modal__close:hover {
+  transform: rotate(90deg);
+  color: var(--color-accent);
+}
 
 /* Titre de la modale : conservé comme nom accessible (aria-labelledby) mais
    masqué à l'œil — c'est la bande décorative ci-dessous qui en tient lieu,
@@ -303,12 +332,13 @@ body.is-modal-open { overflow: hidden; }
 
 /* Le panneau rogne la bande : elle déborde volontairement de ses côtés
    (largeur 135 %) et se retrouve coupée pile aux bords de la modale. */
-.contact-modal__panel { overflow: hidden; }
+.contact-modal__panel {
+  overflow: hidden;
+}
 
 /* Bande "CONTACT" répété, en italique, coupée aux bords du panneau. break-all
    laisse la chaîne continue se répartir sur deux lignes, comme la maquette.
-   La taille suit la largeur : ~30px en mobile, jusqu'à 66px sur desktop
-   (une occurrence "CONTACT" y est relevée à 280px dans Figma). */
+   La taille suit la largeur : ~30px en mobile, jusqu'à 66px sur desktop. */
 .contact-modal__title-deco {
   display: block;
   width: 135%;
@@ -355,10 +385,16 @@ body.is-modal-open { overflow: hidden; }
   transition: border-color var(--speed) var(--ease);
 }
 .contact-modal__form input:focus,
-.contact-modal__form textarea:focus { border-color: var(--color-accent); outline: none; }
-.contact-modal__form textarea { min-height: 130px; resize: vertical; }
+.contact-modal__form textarea:focus {
+  border-color: var(--color-accent);
+  outline: none;
+}
+.contact-modal__form textarea {
+  min-height: 130px;
+  resize: vertical;
+}
 
-/* Bouton "Envoyer" : mêmes codes que les autres boutons du site. */
+/* Bouton "Envoyer" */
 .contact-modal__form input[type="submit"],
 .contact-modal__form .wpcf7-submit {
   width: 100%;
@@ -373,7 +409,9 @@ body.is-modal-open { overflow: hidden; }
   background: var(--color-btn);
   border: none;
   border-radius: 2px;
-  transition: background var(--speed) var(--ease), color var(--speed) var(--ease);
+  transition:
+    background var(--speed) var(--ease),
+    color var(--speed) var(--ease);
 }
 .contact-modal__form input[type="submit"]:hover,
 .contact-modal__form .wpcf7-submit:hover {
@@ -390,10 +428,8 @@ body.is-modal-open { overflow: hidden; }
   border: 1px dashed var(--color-line);
 }
 
-/* =========================================================
-   7. Bloc photo (catalogue + photos apparentées)
-   Photos affichées en carré, avec deux icônes au survol.
-   ========================================================= */
+/* 7. Bloc photo (catalogue + photos apparentées)
+   Photos affichées en carré, avec deux icônes au survol. */
 .photo-card {
   position: relative;
   aspect-ratio: 1 / 1; /* format carré demandé dans les spécifications */
@@ -401,7 +437,11 @@ body.is-modal-open { overflow: hidden; }
   background: var(--color-line);
 }
 
-.photo-card__link { display: block; width: 100%; height: 100%; }
+.photo-card__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 
 .photo-card__img {
   width: 100%;
@@ -409,7 +449,9 @@ body.is-modal-open { overflow: hidden; }
   object-fit: cover;
   transition: transform calc(var(--speed) * 1.5) var(--ease);
 }
-.photo-card:hover .photo-card__img { transform: scale(1.05); }
+.photo-card:hover .photo-card__img {
+  transform: scale(1.05);
+}
 
 /* Voile sombre et icônes, révélés au survol. */
 .photo-card__overlay {
@@ -425,14 +467,16 @@ body.is-modal-open { overflow: hidden; }
   transition: opacity var(--speed) var(--ease);
 }
 .photo-card:hover .photo-card__overlay,
-.photo-card:focus-within .photo-card__overlay { opacity: 1; pointer-events: auto; }
+.photo-card:focus-within .photo-card__overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
 
-/* Appareils tactiles : sans survol, le voile "collerait" au premier tap et
-   imposerait un second tap pour suivre le lien. On le retire donc : un seul
-   tap sur la photo mène directement à sa page infos, via le lien sous-jacent.
-   La lightbox reste accessible depuis la page infos. */
+/* Appareils tactiles : un seul tap sur la photo mène directement à sa page infos */
 @media (hover: none) {
-  .photo-card__overlay { display: none; }
+  .photo-card__overlay {
+    display: none;
+  }
 }
 
 .photo-card__icon {
@@ -444,7 +488,10 @@ body.is-modal-open { overflow: hidden; }
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 50%;
-  transition: background var(--speed) var(--ease), border-color var(--speed) var(--ease), transform var(--speed) var(--ease);
+  transition:
+    background var(--speed) var(--ease),
+    border-color var(--speed) var(--ease),
+    transform var(--speed) var(--ease);
 }
 .photo-card__icon:hover {
   background: var(--color-accent);
@@ -471,12 +518,17 @@ body.is-modal-open { overflow: hidden; }
   background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
   pointer-events: none;
 }
-.photo-card__title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.photo-card__category { opacity: 0.85; white-space: nowrap; }
+.photo-card__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.photo-card__category {
+  opacity: 0.85;
+  white-space: nowrap;
+}
 
-/* =========================================================
-   8. Hero
-   ========================================================= */
+/* 8. Hero */
 .hero {
   position: relative;
   height: 70vh;
@@ -503,12 +555,7 @@ body.is-modal-open { overflow: hidden; }
   -webkit-text-stroke: 2px #fff;
 }
 
-/* =========================================================
-   9. Filtres
-   Le <select> natif est masqué : ses <option> ne peuvent pas être
-   stylées. La liste visible est reconstruite en HTML pour obtenir
-   le surlignement rouge de la maquette.
-   ========================================================= */
+/* 9. Filtres */
 .filtres {
   display: flex;
   align-items: center;
@@ -522,7 +569,9 @@ body.is-modal-open { overflow: hidden; }
 }
 
 /* Le tri est repoussé à droite, les deux filtres restent groupés à gauche. */
-.filtre--tri { margin-left: auto; }
+.filtre--tri {
+  margin-left: auto;
+}
 
 /* Select réel : invisible, mais toujours dans la page (accessibilité, Ajax). */
 .filtre__select {
@@ -555,16 +604,24 @@ body.is-modal-open { overflow: hidden; }
   border-radius: 8px;
   transition: border-color var(--speed) var(--ease);
 }
-.filtre__bouton:hover { border-color: var(--color-accent); }
+.filtre__bouton:hover {
+  border-color: var(--color-accent);
+}
 
-.filtre__valeur { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.filtre__valeur {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* Le chevron pivote quand la liste est ouverte. */
 .filtre__chevron {
   flex-shrink: 0;
   transition: transform var(--speed) var(--ease);
 }
-.filtre.is-open .filtre__chevron { transform: rotate(180deg); }
+.filtre.is-open .filtre__chevron {
+  transform: rotate(180deg);
+}
 
 /* Liste des choix, sous le bouton. */
 .filtre__liste {
@@ -592,7 +649,9 @@ body.is-modal-open { overflow: hidden; }
   letter-spacing: 0.03em;
   color: var(--color-text);
   cursor: pointer;
-  transition: background var(--speed) var(--ease), color var(--speed) var(--ease);
+  transition:
+    background var(--speed) var(--ease),
+    color var(--speed) var(--ease);
 }
 .filtre__option:hover,
 .filtre__option.is-selected {
@@ -600,9 +659,7 @@ body.is-modal-open { overflow: hidden; }
   color: #fff;
 }
 
-/* =========================================================
-   10. Catalogue et bouton "Charger plus"
-   ========================================================= */
+/* 10. Catalogue et bouton "Charger plus" */
 .catalogue {
   max-width: var(--container);
   margin-inline: auto;
@@ -631,7 +688,9 @@ body.is-modal-open { overflow: hidden; }
   background: var(--color-btn);
   border: none;
   border-radius: 2px;
-  transition: background var(--speed) var(--ease), color var(--speed) var(--ease);
+  transition:
+    background var(--speed) var(--ease),
+    color var(--speed) var(--ease);
 }
 
 /* État "Hover" de la maquette : fond noir, texte blanc en gras. */
@@ -641,10 +700,8 @@ body.is-modal-open { overflow: hidden; }
   font-weight: 700;
 }
 
-/* =========================================================
-   11. Page infos d'une photo (single.php)
-   Trois blocs : infos à gauche, photo à droite, interactions en dessous.
-   ========================================================= */
+/* 11. Page infos d'une photo (single.php)
+   Trois blocs : infos à gauche, photo à droite, interactions en dessous. */
 .photo-single {
   max-width: var(--container);
   margin-inline: auto;
@@ -659,7 +716,9 @@ body.is-modal-open { overflow: hidden; }
   padding-bottom: clamp(1rem, 3vh, 2rem); /* espace avant le premier filet */
 }
 
-.photo-single__info { padding-bottom: 0.5rem; }
+.photo-single__info {
+  padding-bottom: 0.5rem;
+}
 
 /* Titre en Space Mono 400 italique, tombant sur deux lignes. */
 .photo-single__title {
@@ -688,10 +747,14 @@ body.is-modal-open { overflow: hidden; }
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-.photo-single__meta .label { color: inherit; }
+.photo-single__meta .label {
+  color: inherit;
+}
 
 /* Photo au format natif, jamais recadrée. */
-.photo-single__media { text-align: right; }
+.photo-single__media {
+  text-align: right;
+}
 .photo-single__img {
   width: 100%;
   max-height: 80vh;
@@ -740,7 +803,9 @@ body.is-modal-open { overflow: hidden; }
   color: var(--color-text);
   background: var(--color-btn);
   border-radius: 2px;
-  transition: background var(--speed) var(--ease), color var(--speed) var(--ease);
+  transition:
+    background var(--speed) var(--ease),
+    color var(--speed) var(--ease);
 }
 .photo-single__contact-btn:hover {
   background: var(--color-title);
@@ -775,30 +840,63 @@ body.is-modal-open { overflow: hidden; }
   opacity: 0;
   transition: opacity var(--speed) var(--ease);
 }
-.photo-single__nav-thumb.is-default { opacity: 1; }
-.photo-single__nav-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.photo-single__nav-thumb.is-default {
+  opacity: 1;
+}
+.photo-single__nav-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 .photo-single__nav-arrow {
   display: block;
   color: var(--color-text);
   transition: color var(--speed) var(--ease);
 }
-.photo-single__nav-arrow--prec { grid-area: prec; justify-self: start; }
-.photo-single__nav-arrow--suiv { grid-area: suiv; justify-self: end; }
-.photo-single__nav-arrow:hover { color: var(--color-accent); }
-.photo-single__nav-icon { display: block; width: 36px; height: auto; }
+.photo-single__nav-arrow--prec {
+  grid-area: prec;
+  justify-self: start;
+}
+.photo-single__nav-arrow--suiv {
+  grid-area: suiv;
+  justify-self: end;
+}
+.photo-single__nav-arrow:hover {
+  color: var(--color-accent);
+}
+.photo-single__nav-icon {
+  display: block;
+  width: 36px;
+  height: auto;
+}
 
 /* Au survol d'une flèche, la miniature bascule sur la photo qu'elle vise
    (spécifications p.5). Tout en CSS, aucune animation JavaScript.
    La miniature visée apparaît... */
-.photo-single__nav-arrow--prec:hover ~ .photo-single__nav-preview .photo-single__nav-thumb--prec,
-.photo-single__nav-arrow--suiv:hover ~ .photo-single__nav-preview .photo-single__nav-thumb--suiv { opacity: 1; }
+.photo-single__nav-arrow--prec:hover
+  ~ .photo-single__nav-preview
+  .photo-single__nav-thumb--prec,
+.photo-single__nav-arrow--suiv:hover
+  ~ .photo-single__nav-preview
+  .photo-single__nav-thumb--suiv {
+  opacity: 1;
+}
 /* ...et l'autre s'efface. */
-.photo-single__nav-arrow--prec:hover ~ .photo-single__nav-preview .photo-single__nav-thumb--suiv,
-.photo-single__nav-arrow--suiv:hover ~ .photo-single__nav-preview .photo-single__nav-thumb--prec { opacity: 0; }
+.photo-single__nav-arrow--prec:hover
+  ~ .photo-single__nav-preview
+  .photo-single__nav-thumb--suiv,
+.photo-single__nav-arrow--suiv:hover
+  ~ .photo-single__nav-preview
+  .photo-single__nav-thumb--prec {
+  opacity: 0;
+}
 
 /* Photos apparentées, sous la zone de contenu. */
-.related-photos { padding: clamp(2rem, 6vw, 4rem) 0; }
+.related-photos {
+  padding: clamp(2rem, 6vw, 4rem) 0;
+}
 .related-photos__label {
   margin: 0 0 2.5rem;
   font-family: var(--font-display);
@@ -813,9 +911,7 @@ body.is-modal-open { overflow: hidden; }
   gap: clamp(0.75rem, 2vw, 1.5rem);
 }
 
-/* =========================================================
-   12. Lightbox
-   ========================================================= */
+/* 12. Lightbox */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -828,9 +924,14 @@ body.is-modal-open { overflow: hidden; }
   background: var(--color-overlay); /* noir transparent à 80 % */
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--speed) var(--ease), visibility var(--speed) var(--ease);
+  transition:
+    opacity var(--speed) var(--ease),
+    visibility var(--speed) var(--ease);
 }
-.lightbox.is-open { opacity: 1; visibility: visible; }
+.lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+}
 
 /* La photo occupe le maximum d'espace disponible, sans être recadrée. */
 .lightbox__contenu {
@@ -872,13 +973,23 @@ body.is-modal-open { overflow: hidden; }
   border: none;
   transition: color var(--speed) var(--ease);
 }
-.lightbox__nav svg { transition: transform var(--speed) var(--ease); }
+.lightbox__nav svg {
+  transition: transform var(--speed) var(--ease);
+}
 
 /* État "Hover" de la maquette : le libellé s'épaissit, la flèche s'allonge
    vers l'extérieur (d'où le transform-origin opposé selon le sens). */
-.lightbox__nav:hover { font-weight: 700; }
-.lightbox__nav--prec:hover svg { transform: scaleX(1.25); transform-origin: left; }
-.lightbox__nav--suiv:hover svg { transform: scaleX(1.25); transform-origin: right; }
+.lightbox__nav:hover {
+  font-weight: 700;
+}
+.lightbox__nav--prec:hover svg {
+  transform: scaleX(1.25);
+  transform-origin: left;
+}
+.lightbox__nav--suiv:hover svg {
+  transform: scaleX(1.25);
+  transform-origin: right;
+}
 
 .lightbox__fermer {
   position: absolute;
@@ -893,28 +1004,32 @@ body.is-modal-open { overflow: hidden; }
   color: #fff;
   background: transparent;
   border: none;
-  transition: transform var(--speed) var(--ease), color var(--speed) var(--ease);
+  transition:
+    transform var(--speed) var(--ease),
+    color var(--speed) var(--ease);
 }
-.lightbox__fermer:hover { transform: rotate(90deg); color: var(--color-accent); }
+.lightbox__fermer:hover {
+  transform: rotate(90deg);
+  color: var(--color-accent);
+}
 
-/* =========================================================
-   13. Responsive
-   ========================================================= */
+/* 13. Responsive */
 @media (max-width: 780px) {
-  /* Deux tokens suffisent à adapter tout le thème au mobile :
-     - header-h : le header de la maquette mobile est plus bas qu'en desktop ;
-     - gutter   : marges latérales plus généreuses, pour que le contenu (et les
-       filets, qui la suivent) respire sur les bords. Choix assumé, au-delà
-       des 16px de la maquette. */
+  /* - header-h : le header de la maquette mobile est plus bas qu'en desktop
+     - gutter   : modifie les marges latérales plus généreuses */
   :root {
     --header-h: 72px;
     --gutter: 40px;
   }
 
   /* Ombre du header mobile relevée dans Figma : X 0, Y 4, flou 4, noir 9 %. */
-  .site-header { box-shadow: 0 4px 4px rgba(0, 0, 0, 0.09); }
+  .site-header {
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.09);
+  }
 
-  .menu-burger { display: block; }
+  .menu-burger {
+    display: block;
+  }
 
   /* La navigation devient un panneau plein écran sous le header. Il entre
      par la droite, comme l'interaction prévue dans la maquette. */
@@ -931,7 +1046,9 @@ body.is-modal-open { overflow: hidden; }
     background: var(--color-accent);
     visibility: hidden;
     transform: translateX(100%);
-    transition: transform var(--speed) var(--ease), visibility var(--speed) var(--ease);
+    transition:
+      transform var(--speed) var(--ease),
+      visibility var(--speed) var(--ease);
   }
 
   .main-nav.is-open {
@@ -951,7 +1068,9 @@ body.is-modal-open { overflow: hidden; }
     color: var(--color-bg);
   }
   .main-nav a:hover,
-  .main-nav .current-menu-item > a { font-weight: 400; }
+  .main-nav .current-menu-item > a {
+    font-weight: 400;
+  }
 
   /* Pied de page : les trois mentions s'empilent, centrées. */
   .site-footer__inner {
@@ -961,19 +1080,39 @@ body.is-modal-open { overflow: hidden; }
   }
 
   /* Filtres et catalogue : tout s'empile sur une colonne. */
-  .filtres { flex-direction: column; align-items: stretch; }
-  .filtre { width: 100%; }
-  .filtre--tri { margin-left: 0; }
+  .filtres {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filtre {
+    width: 100%;
+  }
+  .filtre--tri {
+    margin-left: 0;
+  }
 
-  .catalogue__grille { grid-template-columns: 1fr; }
-  .bouton { width: 100%; min-width: 0; }
+  .catalogue__grille {
+    grid-template-columns: 1fr;
+  }
+  .bouton {
+    width: 100%;
+    min-width: 0;
+  }
 
-  /* Page infos : la maquette mobile place la photo AVANT les infos,
-     à l'inverse du 50/50 desktop où les infos sont à gauche. */
-  .photo-single__content { grid-template-columns: 1fr; }
-  .photo-single__media { order: 1; text-align: left; }
-  .photo-single__info  { order: 2; }
-  .photo-single__media .photo-single__img { max-height: 70vh; }
+  /* Page infos : photo AVANT les infos à l'inverse du desktop où les infos sont à gauche. */
+  .photo-single__content {
+    grid-template-columns: 1fr;
+  }
+  .photo-single__media {
+    order: 1;
+    text-align: left;
+  }
+  .photo-single__info {
+    order: 2;
+  }
+  .photo-single__media .photo-single__img {
+    max-height: 70vh;
+  }
   /* Les deux filets traversent l'écran de bord à bord : on annule la gouttière
      par une marge négative, puis on la rend au contenu en padding. */
   .photo-single__interactions {
@@ -986,33 +1125,60 @@ body.is-modal-open { overflow: hidden; }
     padding-inline: var(--gutter);
   }
   /* Le filet du haut n'est plus à 50 % comme en desktop. */
-  .photo-single__interactions::before { width: 100%; }
-  .photo-single__contact { flex-direction: column; align-items: stretch; gap: 0.75rem; }
-  .photo-single__contact-btn { width: 100%; min-width: 0; }
+  .photo-single__interactions::before {
+    width: 100%;
+  }
+  .photo-single__contact {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .photo-single__contact-btn {
+    width: 100%;
+    min-width: 0;
+  }
 
-  /* La maquette mobile ne conserve que le lien de contact dans ce bloc :
-     ni miniature, ni flèches de navigation. */
-  .photo-single__nav { display: none; }
+  /* Ne conserve que le lien de contact dans ce bloc : ni miniature, ni flèches de navigation. */
+  .photo-single__nav {
+    display: none;
+  }
 
   /* "Vous aimerez aussi" est centré au-dessus des photos empilées. */
-  .related-photos__label { text-align: center; }
-  .related-photos__grid { grid-template-columns: 1fr; gap: 20px; }
+  .related-photos__label {
+    text-align: center;
+  }
+  .related-photos__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 
-  /* La maquette resserre nettement le bas de page : la dernière photo n'est
-     qu'à une vingtaine de pixels du filet du footer. */
-  .related-photos { padding-bottom: 20px; }
-  .site-footer { margin-top: 0; }
+  /* Resserre le bas de la page par rapport à la dernière photo */
+  .related-photos {
+    padding-bottom: 20px;
+  }
+  .site-footer {
+    margin-top: 0;
+  }
 
   /* Lightbox : les libellés des flèches prennent trop de place,
      on ne garde que les icônes de part et d'autre de la photo. */
-  .lightbox { gap: 0.5rem; padding: 1rem; }
-  .lightbox__contenu { max-width: 100%; }
-  .lightbox__nav span { display: none; }
+  .lightbox {
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+  .lightbox__contenu {
+    max-width: 100%;
+  }
+  .lightbox__nav span {
+    display: none;
+  }
 }
 
 /* Écrans très étroits : le titre du menu ouvert ne doit pas déborder. */
 @media (max-width: 360px) {
-  .main-nav a { font-size: 36px; }
+  .main-nav a {
+    font-size: 36px;
+  }
 }
 
 /* Les animations sont désactivées pour qui en fait la demande système. */
