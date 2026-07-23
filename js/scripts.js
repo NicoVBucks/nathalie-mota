@@ -1,13 +1,75 @@
 /**
  * Thème Nathalie Mota — scripts globaux.
  *
- * Étape 1 : ouverture / fermeture de la modale de contact.
- * (La pagination Ajax du catalogue et la lightbox viendront aux étapes 4 et 5.)
+ * Deux comportements disponibles sur tout le site : le menu mobile et la
+ * modale de contact. Le JavaScript se contente d'ajouter ou de retirer des
+ * classes : toute l'animation est portée par le CSS.
  */
 (function () {
 	'use strict';
 
+	/**
+	 * Menu mobile : le bouton "burger" ouvre le panneau plein écran.
+	 */
+	function initialiserMenu() {
+		var bouton = document.querySelector('.js-menu-toggle');
+		var nav = document.querySelector('.main-nav');
+
+		if (!bouton || !nav) {
+			return;
+		}
+
+		function fermerMenu() {
+			nav.classList.remove('is-open');
+			bouton.setAttribute('aria-expanded', 'false');
+			bouton.setAttribute('aria-label', 'Ouvrir le menu');
+			document.body.classList.remove('is-modal-open');
+		}
+
+		function basculerMenu() {
+			if (nav.classList.contains('is-open')) {
+				fermerMenu();
+				return;
+			}
+
+			nav.classList.add('is-open');
+			bouton.setAttribute('aria-expanded', 'true');
+			bouton.setAttribute('aria-label', 'Fermer le menu');
+			document.body.classList.add('is-modal-open');
+		}
+
+		bouton.addEventListener('click', basculerMenu);
+
+		// Clic sur un lien du menu : on referme le panneau. Indispensable pour
+		// "Contact", qui ouvre la modale par-dessus sans changer de page.
+		nav.addEventListener('click', function (evenement) {
+			if (evenement.target.closest('a')) {
+				fermerMenu();
+			}
+		});
+
+		document.addEventListener('keydown', function (evenement) {
+			if (evenement.key === 'Escape' && nav.classList.contains('is-open')) {
+				fermerMenu();
+			}
+		});
+
+		// Passage en desktop alors que le menu est ouvert : le panneau n'existe
+		// plus, mais le défilement du corps de page resterait bloqué. On écoute
+		// le franchissement du seuil, et non chaque pixel de redimensionnement ;
+		// la requête est mot pour mot celle de style.css.
+		var seuilMobile = window.matchMedia('(max-width: 780px)');
+
+		seuilMobile.addEventListener('change', function (evenement) {
+			if (!evenement.matches) {
+				fermerMenu();
+			}
+		});
+	}
+
 	document.addEventListener('DOMContentLoaded', function () {
+		initialiserMenu();
+
 		var modal = document.getElementById('contact-modal');
 		if (!modal) {
 			return;

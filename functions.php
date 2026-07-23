@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! defined( 'NATHALIEMOTA_VERSION' ) ) {
 	// Pensez à incrémenter à chaque mise en production (cache busting).
-	define( 'NATHALIEMOTA_VERSION', '1.0.1' );
+	define( 'NATHALIEMOTA_VERSION', '1.0.13' );
 }
 
 // Identifiant du formulaire Contact Form 7 utilisé dans la modale.
@@ -144,6 +144,10 @@ function nathaliemota_image_sizes() {
 	add_image_size( 'photo_thumbnail_2x', 1200, 1200, true ); // écrans Retina
 	// Grand format NON recadré pour la page infos — respecte paysage/portrait.
 	add_image_size( 'photo_large', 1600, 1600, false );
+	// Miniature de navigation du single : affichée en 110x80, donc 2x pour Retina.
+	// Une taille dédiée plutôt que le "thumbnail" natif, que la cliente peut
+	// redimensionner depuis Réglages > Médias sans savoir ce qu'elle casse.
+	add_image_size( 'photo_nav', 220, 160, true );
 }
 add_action( 'after_setup_theme', 'nathaliemota_image_sizes' );
 

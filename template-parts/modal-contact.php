@@ -30,6 +30,11 @@ $nathaliemota_cf7_id = defined( 'NATHALIEMOTA_CF7_ID' ) ? NATHALIEMOTA_CF7_ID : 
 			<?php esc_html_e( 'Contact', 'nathaliemota' ); ?>
 		</h2>
 
+		<?php // Bande décorative de la maquette mobile : "CONTACT" répété en
+		      // italique, débordant du panneau et coupé aux bords. Purement
+		      // visuel (aria-hidden) — le nom accessible reste porté par le <h2>. ?>
+		<p class="contact-modal__title-deco" aria-hidden="true">CONTACTCONTACTCONTACTCONTACTCONTACTCONTACTCONTACTCONTACTCONTACT</p>
+
 		<div class="contact-modal__form">
 			<?php
 			if ( shortcode_exists( 'contact-form-7' ) && $nathaliemota_cf7_id ) {

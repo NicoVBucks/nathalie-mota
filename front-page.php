@@ -28,7 +28,9 @@ $photo_hero = new WP_Query(
 $image_hero = '';
 if ( $photo_hero->have_posts() ) {
 	$photo_hero->the_post();
-	$image_hero = get_the_post_thumbnail_url( get_the_ID(), 'full' );
+	// photo_large (1600 px) et non 'full' : le hero est décoratif, servir
+	// l'original de Nathalie serait plusieurs mégaoctets pour rien (Green Code).
+	$image_hero = get_the_post_thumbnail_url( get_the_ID(), 'photo_large' );
 	wp_reset_postdata();
 }
 

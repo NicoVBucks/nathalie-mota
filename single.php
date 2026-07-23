@@ -72,31 +72,41 @@ while ( have_posts() ) :
 					data-photo-ref="<?php echo esc_attr( $reference ); ?>">Contact</a>
 			</div>
 
+			<?php
+			// Miniature affichée au repos : la suivante si elle existe, sinon la
+			// précédente (cas de la dernière photo de la galerie).
+			$defaut_prec = $suivante ? '' : 'is-default';
+			$defaut_suiv = $suivante ? 'is-default' : '';
+
+			// Les flèches précèdent l'aperçu dans le DOM : leur survol pilote la
+			// miniature via le sélecteur CSS "~". La grille (style.css) rétablit
+			// l'aperçu au-dessus des flèches, conformément à la maquette.
+			?>
 			<nav class="photo-single__nav" aria-label="Navigation entre les photos">
-				<?php
-				// Aperçu toujours visible : la photo suivante (ou la précédente si on est sur la dernière).
-				$apercu = $suivante ? $suivante : $precedente;
-				if ( $apercu ) :
-				?>
-					<div class="photo-single__nav-preview">
-						<?php echo get_the_post_thumbnail( $apercu->ID, 'photo_thumbnail' ); ?>
-					</div>
+
+				<?php if ( $precedente ) : ?>
+					<a class="photo-single__nav-arrow photo-single__nav-arrow--prec" href="<?php echo esc_url( get_permalink( $precedente ) ); ?>" aria-label="Photo précédente">
+						<?php get_template_part( 'template-parts/fleche', null, array( 'sens' => 'prec', 'classe' => 'photo-single__nav-icon' ) ); ?>
+					</a>
 				<?php endif; ?>
 
-				<div class="photo-single__nav-arrows">
+				<?php if ( $suivante ) : ?>
+					<a class="photo-single__nav-arrow photo-single__nav-arrow--suiv" href="<?php echo esc_url( get_permalink( $suivante ) ); ?>" aria-label="Photo suivante">
+						<?php get_template_part( 'template-parts/fleche', null, array( 'sens' => 'suiv', 'classe' => 'photo-single__nav-icon' ) ); ?>
+					</a>
+				<?php endif; ?>
+
+				<?php // Aperçu décoratif : la navigation reste assurée par les liens ci-dessus. ?>
+				<div class="photo-single__nav-preview" aria-hidden="true">
 					<?php if ( $precedente ) : ?>
-						<a href="<?php echo esc_url( get_permalink( $precedente ) ); ?>" aria-label="Photo précédente">
-							<svg class="photo-single__nav-icon" width="36" height="15" viewBox="0 0 36 15" fill="none" aria-hidden="true">
-								<path d="M0.292893 6.65691C-0.0976311 7.04743 -0.0976311 7.6806 0.292893 8.07112L6.65685 14.4351C7.04738 14.8256 7.68054 14.8256 8.07107 14.4351C8.46159 14.0446 8.46159 13.4114 8.07107 13.0209L2.41421 7.36401L8.07107 1.70716C8.46159 1.31664 8.46159 0.68347 8.07107 0.292946C7.68054 -0.0975785 7.04738 -0.0975785 6.65685 0.292946L0.292893 6.65691ZM35 8.36401C35.5523 8.36401 36 7.9163 36 7.36401C36 6.81173 35.5523 6.36401 35 6.36401V8.36401ZM1 8.36401L35 8.36401V6.36401L1 6.36401L1 8.36401Z" fill="currentColor"/>
-							</svg>
-						</a>
+						<span class="photo-single__nav-thumb photo-single__nav-thumb--prec <?php echo esc_attr( $defaut_prec ); ?>">
+							<?php echo get_the_post_thumbnail( $precedente->ID, 'photo_nav', array( 'loading' => 'lazy' ) ); ?>
+						</span>
 					<?php endif; ?>
 					<?php if ( $suivante ) : ?>
-						<a href="<?php echo esc_url( get_permalink( $suivante ) ); ?>" aria-label="Photo suivante">
-							<svg class="photo-single__nav-icon" width="36" height="15" viewBox="0 0 36 15" fill="none" aria-hidden="true">
-								<path d="M35.7071 8.07112C36.0976 7.6806 36.0976 7.04743 35.7071 6.65691L29.3431 0.292946C28.9526 -0.0975785 28.3195 -0.0975785 27.9289 0.292946C27.5384 0.68347 27.5384 1.31664 27.9289 1.70716L33.5858 7.36401L27.9289 13.0209C27.5384 13.4114 27.5384 14.0446 27.9289 14.4351C28.3195 14.8256 28.9526 14.8256 29.3431 14.4351L35.7071 8.07112ZM1 6.36401C0.447716 6.36401 0 6.81173 0 7.36401C0 7.9163 0.447716 8.36401 1 8.36401V6.36401ZM35 6.36401L1 6.36401V8.36401L35 8.36401V6.36401Z" fill="currentColor"/>
-							</svg>
-						</a>
+						<span class="photo-single__nav-thumb photo-single__nav-thumb--suiv <?php echo esc_attr( $defaut_suiv ); ?>">
+							<?php echo get_the_post_thumbnail( $suivante->ID, 'photo_nav', array( 'loading' => 'lazy' ) ); ?>
+						</span>
 					<?php endif; ?>
 				</div>
 			</nav>

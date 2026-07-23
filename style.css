@@ -172,12 +172,48 @@ body.is-modal-open { overflow: hidden; }
 .main-nav a:hover,
 .main-nav .current-menu-item > a { font-weight: 700; }
 
+/* Bouton du menu mobile : absent du desktop, affiché par la section 13.
+   Les trois barres se transforment en croix, entièrement en CSS. */
+.menu-burger {
+  display: none;
+  position: relative;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--color-title);
+}
+
+/* Les pseudo-éléments se positionnent par rapport à la barre centrale, pas au
+   bouton : d'où le left/width identiques pour les trois, sinon elles décalent. */
+.menu-burger__barres,
+.menu-burger__barres::before,
+.menu-burger__barres::after {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  transition: transform var(--speed) var(--ease), background var(--speed) var(--ease);
+}
+
+.menu-burger__barres { top: 15px; }
+.menu-burger__barres::before { content: ""; transform: translateY(-9px); }
+.menu-burger__barres::after  { content: ""; transform: translateY(9px); }
+
+/* Menu ouvert : la barre centrale s'efface, les deux autres se croisent. */
+.menu-burger[aria-expanded="true"] .menu-burger__barres { background: transparent; }
+.menu-burger[aria-expanded="true"] .menu-burger__barres::before { transform: rotate(45deg); }
+.menu-burger[aria-expanded="true"] .menu-burger__barres::after  { transform: rotate(-45deg); }
+
 
 /* =========================================================
    5. Footer
    ========================================================= */
 .site-footer {
-  border-top: 1px solid var(--color-line);
+  /* Filet de séparation : noir 100 %, comme les autres filets du thème. */
+  border-top: 2px solid var(--color-title);
   margin-top: 4rem;
 }
 .site-footer__inner {
@@ -230,10 +266,13 @@ body.is-modal-open { overflow: hidden; }
 }
 .contact-modal.is-open .contact-modal__panel { transform: translateY(0); }
 
+/* Pastille blanche et z-index : sans quoi la croix, en navy, se perdrait
+   par-dessus les lettres noires de la bande décorative. */
 .contact-modal__close {
   position: absolute;
   top: 1rem;
   right: 1rem;
+  z-index: 1;
   width: 40px;
   height: 40px;
   display: grid;
@@ -241,24 +280,50 @@ body.is-modal-open { overflow: hidden; }
   font-size: 1.5rem;
   line-height: 1;
   color: var(--color-text);
-  background: transparent;
+  background: var(--color-bg);
   border: none;
+  border-radius: 50%;
   transition: transform var(--speed) var(--ease), color var(--speed) var(--ease);
 }
 .contact-modal__close:hover { transform: rotate(90deg); color: var(--color-accent); }
 
+/* Titre de la modale : conservé comme nom accessible (aria-labelledby) mais
+   masqué à l'œil — c'est la bande décorative ci-dessous qui en tient lieu,
+   sur desktop comme sur mobile. */
 .contact-modal__title {
-  margin: 0 0 1.75rem;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Le panneau rogne la bande : elle déborde volontairement de ses côtés
+   (largeur 135 %) et se retrouve coupée pile aux bords de la modale. */
+.contact-modal__panel { overflow: hidden; }
+
+/* Bande "CONTACT" répété, en italique, coupée aux bords du panneau. break-all
+   laisse la chaîne continue se répartir sur deux lignes, comme la maquette.
+   La taille suit la largeur : ~30px en mobile, jusqu'à 66px sur desktop
+   (une occurrence "CONTACT" y est relevée à 280px dans Figma). */
+.contact-modal__title-deco {
+  display: block;
+  width: 135%;
+  margin: 0 -17.5% 1.75rem;
   font-family: var(--font-display);
   font-style: italic;
-  font-weight: 700;
-  font-size: clamp(2rem, 7vw, 3rem);
-  line-height: 1;
-  letter-spacing: 0.02em;
+  font-weight: 400;
+  font-size: clamp(30px, 8vw, 66px);
+  line-height: 1.1;
+  text-align: center;
   text-transform: uppercase;
-  color: var(--color-text);
+  color: var(--color-title);
+  word-break: break-all;
+  max-height: 2.2em; /* deux lignes ; le reste de la répétition est rogné */
   overflow: hidden;
-  white-space: nowrap;
 }
 
 /* Mise en forme du formulaire généré par Contact Form 7. */
@@ -361,6 +426,14 @@ body.is-modal-open { overflow: hidden; }
 }
 .photo-card:hover .photo-card__overlay,
 .photo-card:focus-within .photo-card__overlay { opacity: 1; pointer-events: auto; }
+
+/* Appareils tactiles : sans survol, le voile "collerait" au premier tap et
+   imposerait un second tap pour suivre le lien. On le retire donc : un seul
+   tap sur la photo mène directement à sa page infos, via le lien sous-jacent.
+   La lightbox reste accessible depuis la page infos. */
+@media (hover: none) {
+  .photo-card__overlay { display: none; }
+}
 
 .photo-card__icon {
   width: 44px;
@@ -675,32 +748,54 @@ body.is-modal-open { overflow: hidden; }
   font-weight: 700;
 }
 
-/* Navigation : aperçu de la photo voisine, flèches en dessous. */
+/* Navigation : aperçu (toujours visible) au-dessus, deux flèches en dessous.
+   Grille en deux temps — les flèches précèdent l'aperçu dans le DOM pour le
+   piloter au survol, la grille les replace visuellement sous l'aperçu. */
 .photo-single__nav {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "preview preview"
+    "prec    suiv";
   gap: 0.6rem;
+  width: 110px;
 }
+
 .photo-single__nav-preview {
+  grid-area: preview;
+  position: relative;
   width: 110px;
   height: 80px;
   overflow: hidden;
 }
-.photo-single__nav-preview img { width: 100%; height: 100%; object-fit: cover; }
-
-.photo-single__nav-arrows {
-  display: flex;
-  justify-content: space-between;
-  width: 110px;
+/* Les deux miniatures sont superposées ; seule celle en cours est opaque. */
+.photo-single__nav-thumb {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--speed) var(--ease);
 }
-.photo-single__nav-arrows a {
+.photo-single__nav-thumb.is-default { opacity: 1; }
+.photo-single__nav-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.photo-single__nav-arrow {
   display: block;
   color: var(--color-text);
   transition: color var(--speed) var(--ease);
 }
-.photo-single__nav-arrows a:hover { color: var(--color-accent); }
+.photo-single__nav-arrow--prec { grid-area: prec; justify-self: start; }
+.photo-single__nav-arrow--suiv { grid-area: suiv; justify-self: end; }
+.photo-single__nav-arrow:hover { color: var(--color-accent); }
 .photo-single__nav-icon { display: block; width: 36px; height: auto; }
+
+/* Au survol d'une flèche, la miniature bascule sur la photo qu'elle vise
+   (spécifications p.5). Tout en CSS, aucune animation JavaScript.
+   La miniature visée apparaît... */
+.photo-single__nav-arrow--prec:hover ~ .photo-single__nav-preview .photo-single__nav-thumb--prec,
+.photo-single__nav-arrow--suiv:hover ~ .photo-single__nav-preview .photo-single__nav-thumb--suiv { opacity: 1; }
+/* ...et l'autre s'efface. */
+.photo-single__nav-arrow--prec:hover ~ .photo-single__nav-preview .photo-single__nav-thumb--suiv,
+.photo-single__nav-arrow--suiv:hover ~ .photo-single__nav-preview .photo-single__nav-thumb--prec { opacity: 0; }
 
 /* Photos apparentées, sous la zone de contenu. */
 .related-photos { padding: clamp(2rem, 6vw, 4rem) 0; }
@@ -806,6 +901,65 @@ body.is-modal-open { overflow: hidden; }
    13. Responsive
    ========================================================= */
 @media (max-width: 780px) {
+  /* Deux tokens suffisent à adapter tout le thème au mobile :
+     - header-h : le header de la maquette mobile est plus bas qu'en desktop ;
+     - gutter   : marges latérales plus généreuses, pour que le contenu (et les
+       filets, qui la suivent) respire sur les bords. Choix assumé, au-delà
+       des 16px de la maquette. */
+  :root {
+    --header-h: 72px;
+    --gutter: 40px;
+  }
+
+  /* Ombre du header mobile relevée dans Figma : X 0, Y 4, flou 4, noir 9 %. */
+  .site-header { box-shadow: 0 4px 4px rgba(0, 0, 0, 0.09); }
+
+  .menu-burger { display: block; }
+
+  /* La navigation devient un panneau plein écran sous le header. Il entre
+     par la droite, comme l'interaction prévue dans la maquette. */
+  .main-nav {
+    position: fixed;
+    top: var(--header-h);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9; /* sous le header : le logo et la croix restent visibles */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent);
+    visibility: hidden;
+    transform: translateX(100%);
+    transition: transform var(--speed) var(--ease), visibility var(--speed) var(--ease);
+  }
+
+  .main-nav.is-open {
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* Space Mono 44 px, capitales, blanc et centré (relevé dans Figma). */
+  .main-nav a {
+    font-size: 44px;
+    text-align: center;
+    color: var(--color-bg);
+  }
+  .main-nav a:hover,
+  .main-nav .current-menu-item > a { font-weight: 400; }
+
+  /* Pied de page : les trois mentions s'empilent, centrées. */
+  .site-footer__inner {
+    flex-direction: column;
+    gap: 24px;
+    padding-block: 44px;
+  }
+
   /* Filtres et catalogue : tout s'empile sur une colonne. */
   .filtres { flex-direction: column; align-items: stretch; }
   .filtre { width: 100%; }
@@ -814,22 +968,40 @@ body.is-modal-open { overflow: hidden; }
   .catalogue__grille { grid-template-columns: 1fr; }
   .bouton { width: 100%; min-width: 0; }
 
-  /* Page infos : infos puis photo, au lieu du 50/50. */
+  /* Page infos : la maquette mobile place la photo AVANT les infos,
+     à l'inverse du 50/50 desktop où les infos sont à gauche. */
   .photo-single__content { grid-template-columns: 1fr; }
-  .photo-single__media { text-align: left; }
+  .photo-single__media { order: 1; text-align: left; }
+  .photo-single__info  { order: 2; }
   .photo-single__media .photo-single__img { max-height: 70vh; }
+  /* Les deux filets traversent l'écran de bord à bord : on annule la gouttière
+     par une marge négative, puis on la rend au contenu en padding. */
   .photo-single__interactions {
     flex-direction: column;
     align-items: stretch;
     gap: 1.25rem;
     padding-block: 1.25rem;
     min-height: auto;
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
   }
+  /* Le filet du haut n'est plus à 50 % comme en desktop. */
+  .photo-single__interactions::before { width: 100%; }
   .photo-single__contact { flex-direction: column; align-items: stretch; gap: 0.75rem; }
   .photo-single__contact-btn { width: 100%; min-width: 0; }
-  .photo-single__nav { align-items: flex-start; }
 
-  .related-photos__grid { grid-template-columns: 1fr; }
+  /* La maquette mobile ne conserve que le lien de contact dans ce bloc :
+     ni miniature, ni flèches de navigation. */
+  .photo-single__nav { display: none; }
+
+  /* "Vous aimerez aussi" est centré au-dessus des photos empilées. */
+  .related-photos__label { text-align: center; }
+  .related-photos__grid { grid-template-columns: 1fr; gap: 20px; }
+
+  /* La maquette resserre nettement le bas de page : la dernière photo n'est
+     qu'à une vingtaine de pixels du filet du footer. */
+  .related-photos { padding-bottom: 20px; }
+  .site-footer { margin-top: 0; }
 
   /* Lightbox : les libellés des flèches prennent trop de place,
      on ne garde que les icônes de part et d'autre de la photo. */
@@ -838,9 +1010,9 @@ body.is-modal-open { overflow: hidden; }
   .lightbox__nav span { display: none; }
 }
 
-@media (max-width: 640px) {
-  .site-header__inner { flex-direction: column; gap: 0.75rem; padding-block: 1rem; }
-  .main-nav ul { gap: 1.25rem; }
+/* Écrans très étroits : le titre du menu ouvert ne doit pas déborder. */
+@media (max-width: 360px) {
+  .main-nav a { font-size: 36px; }
 }
 
 /* Les animations sont désactivées pour qui en fait la demande système. */

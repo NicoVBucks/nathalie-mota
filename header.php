@@ -30,6 +30,13 @@
 			</a>
 		<?php endif; ?>
 
+		<?php // Bouton du menu mobile : masqué en desktop, il pilote le panneau ci-dessous. ?>
+		<button type="button" class="menu-burger js-menu-toggle"
+			aria-controls="main-menu" aria-expanded="false"
+			aria-label="<?php esc_attr_e( 'Ouvrir le menu', 'nathaliemota' ); ?>">
+			<span class="menu-burger__barres" aria-hidden="true"></span>
+		</button>
+
 		<nav class="main-nav" aria-label="<?php esc_attr_e( 'Navigation principale', 'nathaliemota' ); ?>">
 			<?php
 			wp_nav_menu(
