@@ -130,11 +130,3 @@ modification de CSS ou de JavaScript : elle sert au cache busting des ressources
 Toutes les couleurs et polices sont centralisées dans les variables CSS en tête
 de `style.css`. Ne codez jamais une valeur en dur : passez par ces tokens.
 
-## Suivi des étapes
-
-- [x] Étape 1 — Thème, header, footer, modale de contact
-- [x] Étape 2 — Structure de contenu (CPT « photo », taxonomies, champs)
-- [x] Étape 3 — Template single (page infos d'une photo)
-- [x] Étape 4 — Page d'accueil (hero, filtres Ajax, pagination)
-- [x] Étape 5 — Lightbox
-- [ ] Étape 6 — Export du site (ZIP fichiers + base de données)
